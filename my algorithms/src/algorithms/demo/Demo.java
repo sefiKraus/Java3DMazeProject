@@ -31,7 +31,7 @@ public class Demo {
 	{
 
 
-		String size="5,7,7";
+		String size="5,30,30";
 
 		Maze3d maze=new MyMaze3dGenerator().generate(size);
 		
@@ -44,13 +44,13 @@ public class Demo {
 		CommonSearcher<Position>searcher2;
 		Searchable3dMaze searchable3dMaze=new Searchable3dMaze(maze);
 		ArrayList<Position> solution;
-		/*
+		
 		searcher1= new Bfs<Position>();
 		 System.out.println("Test for the bfs solution algorithm");
 		solution=(searcher1.search(searchable3dMaze)).getSolution();
 		System.out.println("Solution with Bfs is: "+solution);
 		System.out.println("Number of nodes evaluated: "+searcher1.getNumberOfNodesEvaluated());
-*/	
+	
 		
 		
 		 searcher2=new Dfs<Position>();
