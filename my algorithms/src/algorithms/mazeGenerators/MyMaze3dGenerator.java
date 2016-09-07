@@ -46,87 +46,81 @@ public class MyMaze3dGenerator extends CommonMaze3dGenerator {
 		this.initiateOddIndexValues(maze);
 		maze.setStartPosition();
 		maze.setGoalPosition();
-		Position temPos=new Position(maze.getStartPosition());
-		maze.setPlayerPosition(temPos);
+		maze.setPlayerPosition(new Position(maze.getStartPosition().getY(),maze.getStartPosition().getX(),maze.getStartPosition().getZ()));
 		String neighbors[];
-
-		while(!maze.getPlayerPosition().equals(maze.getGoalPosition()))
+		Position pos;
+		do
 		{
-			neighbors= maze.getAllPositionAround(maze.getPlayerPosition());
-			for(int i=0; i< neighbors.length;i++)
+			if(!visited.contains(maze.getPlayerPosition()))
+			{	
+			visited.push(maze.getPlayerPosition());
+			}
+			neighbors=maze.getAllPositionAround(maze.getPlayerPosition());
+			if(neighbors.length>0)
 			{
-				String tempString= neighbors[i];
-				if(tempString!=null)
+				for(int i=0;i<neighbors.length;i++)
 				{
-					Position neighbor=new Position(tempString);
-					if(!visited.contains(neighbor)&& maze.getPositionValueByPosition(neighbor)==0)
+					if(neighbors[i]!=null)
 					{
-						unVisited.push(neighbor);
-
+						pos=new Position(neighbors[i]);
+						if(!unVisited.contains(pos))
+						{
+							unVisited.push(pos);
+						}
 					}
-			
-				
 				}
-			
-			}
-			Collections.shuffle(unVisited);
-
-		
-			if(unVisited.size()==0)
-			{
-				
-				Position tempPos=visited.pop();
-	
-				maze.setPlayerPosition(tempPos);	
-				break;
-			}
-			else 
-			{
-					visited.push(maze.getPlayerPosition());
-					Position tempPos=unVisited.pop();
-					int y1=maze.getPlayerPosition().getY()-tempPos.getY();
-					int x1=maze.getPlayerPosition().getX()-tempPos.getX();
-					int z1=maze.getPlayerPosition().getZ()-tempPos.getZ();
-					if(x1==0 && z1==0)
-					{
-						Position midPosition=new Position(maze.getPlayerPosition().getY()-y1, maze.getPlayerPosition().getX(),maze.getPlayerPosition().getZ());
-						maze.setPositionValueByPosition(midPosition, 0);
-					}
-					else if(y1==0 && (x1!=0 || z1!=0))
-					{
-						Position midPosition=new Position(maze.getPlayerPosition().getY(), maze.getPlayerPosition().getX()-x1/2,maze.getPlayerPosition().getZ()-z1/2);
-						maze.setPositionValueByPosition(midPosition, 0);
-					}
-					maze.setPositionValueByPosition(tempPos, 0);
-					maze.setPlayerPosition(tempPos);
-					unVisited.clear();
-				//	visited.push(maze.getPlayerPosition());
-		
-			}
-			if(visited.isEmpty())
-			{
-				System.out.println("Error building the maze");
-				break;
-			}
-
-		/*	do{
-			Position tempPos=unVisited.pop();
-			if(!visited.contains(tempPos))
-			{
-				maze.setPositionValueByPosition(tempPos, 0);
-				maze.setPlayerPosition(tempPos);
+				Collections.shuffle(unVisited);
+				Position moveTo=unVisited.pop();
 				unVisited.clear();
-				break;
+				if(maze.getPlayerPosition().getY()>moveTo.getY())
+				{
+					maze.moveDown();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+				}
+				else if(maze.getPlayerPosition().getY()<moveTo.getY())
+				{
+					maze.moveUp();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+				}
+				else if(maze.getPlayerPosition().getX()>moveTo.getX())
+				{
+					maze.moveLeft();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+					maze.moveLeft();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+				}
+				else if(maze.getPlayerPosition().getX()<moveTo.getX())
+				{
+					maze.moveRight();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+					maze.moveRight();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+				}
+				else if(maze.getPlayerPosition().getZ()>moveTo.getZ())
+				{
+					maze.moveOut();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+					maze.moveOut();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+				}
+				else if(maze.getPlayerPosition().getZ()<moveTo.getZ())
+				{
+					maze.moveIn();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+					maze.moveIn();
+					maze.setPositionValueByPosition(maze.getPlayerPosition(), 0);
+
+				}
 			}
-			else if( unVisited.size()==0)
+			else
 			{
 				maze.setPlayerPosition(visited.pop());
 			}
 			
-			}while(!unVisited.isEmpty());*/
-		
-		}
+			
+		}while(!maze.getPlayerPosition().equals(maze.getGoalPosition()));
 		maze.setPlayerPosition(maze.getStartPosition());
+		
 
 		return maze;
 	}

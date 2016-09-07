@@ -31,9 +31,12 @@ public class Demo {
 	{
 
 
-		String size="10,10,10";
-		Maze3d maze=new MyMaze3dGenerator().generate(size);
+		String size="5,10,10";
 
+		Maze3d maze=new MyMaze3dGenerator().generate(size);
+		System.out.println("Start position: "+maze.getStartPosition());
+		System.out.println("Goal position: "+maze.getGoalPosition());
+/*
 
 		CommonSearcher<Position> searcher1;
 		CommonSearcher<Position>searcher2;
@@ -45,8 +48,7 @@ public class Demo {
 		solution=(searcher1.search(searchable3dMaze)).getSolution();
 		System.out.println("Solution with Bfs is: "+solution);
 		System.out.println("Number of nodes evaluated: "+searcher1.getNumberOfNodesEvaluated());
-		System.out.println("Start position: "+maze.getStartPosition());
-		System.out.println("Goal position: "+maze.getGoalPosition());
+	
 		
 		
 		 searcher2=new Dfs<Position>();
@@ -55,11 +57,11 @@ public class Demo {
 		 System.out.println("Solution with Dfs is: "+solution);
 		 System.out.println("Number of nodes evaluated: "+searcher2.getNumberOfNodesEvaluated());
 		 System.out.println("Start position: "+maze.getStartPosition());
-		 System.out.println("Goal position: "+maze.getGoalPosition());
+		 System.out.println("Goal position: "+maze.getGoalPosition());*/
 		
 		  maze.printMaze();
 		
-		
+/*		
 		 //Compressor and Decompressor Test
 		OutputStream out=new MyCompressorOutputStream(new FileOutputStream("1.maze"));
 		out.write(maze.toByteArray());
@@ -73,7 +75,7 @@ public class Demo {
 		
 		Maze3d loaded=new Maze3d(b);
 		System.out.println(loaded.equals(maze));
-
+*/
 	}
 	public static void main(String[] args) throws IOException {
 		Demo demo=new Demo();

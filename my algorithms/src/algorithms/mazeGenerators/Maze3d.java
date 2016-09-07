@@ -199,8 +199,8 @@ public class Maze3d implements Serializable{
 	 */
 	boolean checkLegalPositionForPlayer(int y,int x,int z)
 	{
-	//	return ( y>0 && y<this.sizeY-1 && x>0 && x<this.sizeX-1 && z>0 && z<this.sizeZ-1);
-		return ( (y>=0 && y<this.sizeY) && (x>=0 && x<this.sizeX) &&( z>=0 && z<this.sizeZ));
+		return ( y>0 && y<this.sizeY-1 && x>0 && x<this.sizeX-1 && z>0 && z<this.sizeZ-1);
+		//return ( (y>=0 && y<this.sizeY) && (x>=0 && x<this.sizeX) &&( z>=0 && z<this.sizeZ));
 
 	}
 	
@@ -397,35 +397,70 @@ public class Maze3d implements Serializable{
 	{
 		String[] allNeighbors=new String[6];
 		if(legalMove(1)&& this.getPositionValueByIndex(position.getY()+1, position.getX(), position.getZ())==0)
+		{
+			
 			allNeighbors[0]=(Integer.toString(position.getY()+1)+","+Integer.toString(position.getX())+","+Integer.toString(position.getZ()));
-	
-		else 
+		}
+		else
+		{
 			allNeighbors[0]=null;
+				
+		}
 		
 		if(legalMove(2)&& this.getPositionValueByIndex(position.getY()-1, position.getX(), position.getZ())==0)
+		{
 			allNeighbors[1]=(Integer.toString(position.getY()-1)+","+Integer.toString(position.getX())+","+Integer.toString(position.getZ()));
-		else 
+				
+		}
+		else
+		{
 			allNeighbors[1]=null;
-		
+				
+		}
 		if(legalMove(3)&& this.getPositionValueByIndex(position.getY(), position.getX()+1, position.getZ())==0)
+		{
 			allNeighbors[2]=(Integer.toString(position.getY())+","+Integer.toString(position.getX()+1)+","+Integer.toString(position.getZ()));
+			
+		}
 		else 
+		{
 			allNeighbors[2]=null;
+				
+		}
 		
 		if(legalMove(4)&& this.getPositionValueByIndex(position.getY(), position.getX()-1, position.getZ())==0)
+		{
 			allNeighbors[3]=(Integer.toString(position.getY())+","+Integer.toString(position.getX()-1)+","+Integer.toString(position.getZ()));
-		else 
+			
+		}
+		else
+		{
 			allNeighbors[3]=null;
+				
+		}
 		
 		if(legalMove(5)&& this.getPositionValueByIndex(position.getY(), position.getX(), position.getZ()+1)==0)
+		
+		{
 			allNeighbors[4]=(Integer.toString(position.getY())+","+Integer.toString(position.getX())+","+Integer.toString(position.getZ()+1));
-		else 
+			
+		}
+		else
+		{
 			allNeighbors[4]=null;
+			
+		}
 		
 		if(legalMove(6)&& this.getPositionValueByIndex(position.getY(), position.getX(), position.getZ()-1)==0)
+		{
 			allNeighbors[5]=(Integer.toString(position.getY())+","+Integer.toString(position.getX())+","+Integer.toString(position.getZ()-1));
-		else 
+				
+		}
+		else
+		{
 			allNeighbors[5]=null;
+		}
+			
 		return allNeighbors;
 	}
 	
