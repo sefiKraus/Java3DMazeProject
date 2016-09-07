@@ -15,61 +15,50 @@ public class Dfs<T> extends CommonStackSearcher<T> {
 	@Override
 	public Solution<T> search(Searchable<T> searchable) {
 		
-		this.pushToUnvisited(searchable.getStartState());
-		
-		while(this.getUnVisited().size()>0)
+		State<T>tempPos;
+		State<T>curPosition;
+		curPosition=searchable.getStartState();
+		ArrayList<State<T>>neighbors=new ArrayList<State<T>>();	
+		do
 		{
-			State<T> n= this.popFromUnvisited();
-			if(!this.getVisited().contains(n))
+			if(!this.getVisited().contains(curPosition))
 			{
-				this.pushToVisited(n);
+				this.pushToVisited(curPosition);
 				
 			}
-	
-			if(n.equals(searchable.getGoalState()))
-			{
-			  return this.backTrack(n, searchable.getStartState());
-			}
-			
-			ArrayList<State<T>> nodes=searchable.getAllPossibleMoves(n);
-			if(nodes.size()==0)
-			{
-				pushToUnvisited(n.getCameFrom());
-			}
-			else
-			{
-				
-		
-			for (State<T> state : nodes) {
-				if(!this.getUnVisited().contains(state)&& !this.getVisited().contains(state)&& state.getCameFrom()==null)
+			neighbors=searchable.getAllPossibleMoves(curPosition);
+			for (State<T> state : neighbors) {
+				if(!this.getVisited().contains(state))
 				{
-					state.setCameFrom(n);
-					state.setCost(state.getCost()+n.getCost());
+					state.setCameFrom(curPosition);
 					this.pushToUnvisited(state);
 				}
-				
-				}
 			}
-			Collections.shuffle(this.getUnVisited());
-			if(this.getUnVisited().isEmpty())
+			if(!this.getUnVisited().isEmpty())
 			{
-				State<T> tempState=n.getCameFrom();
-				this.pushToUnvisited(tempState);
-
-			
+				Collections.shuffle(getUnVisited());
+				curPosition=this.popFromUnvisited();
+				this.clearUnvisitedStack();
+				
 			}
 			else
 			{
-				State<T> popedFromUnvisited=this.popFromUnvisited();
-				this.clearUnvisitedStack();
-				this.pushToUnvisited(popedFromUnvisited);
-				
+				if(!curPosition.equals(searchable.getStartState()))
+				{
+					
+					curPosition=curPosition.getCameFrom();
+					this.removeFromVisited(curPosition);
+
+				}
+				else
+				{
+					curPosition=this.popFromVisited();
+				}
 			}
+		}while(!curPosition.equals(searchable.getGoalState()));
 		
-			
-		}
+		return this.backTrace(curPosition, searchable.getStartState());
 		
-		return null;
 	}
 
 }

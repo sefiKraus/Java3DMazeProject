@@ -25,7 +25,7 @@ public class Bfs<T> extends CommonPriorityQueueSearcher<T> {
 			closed.add(n);
 			if(n.equals(searchable.getGoalState()))
 			{
-				return backTrack(n,searchable.getStartState());
+				return backTrace(n,searchable.getStartState());
 			}
 			ArrayList<State<T>> nodes=searchable.getAllPossibleMoves(n);
 			if(nodes.size()==0)

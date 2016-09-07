@@ -37,7 +37,7 @@ public abstract class CommonSearcher<T> implements Searcher<T> {
  * @param goal	state
  * @return	ArrayList<state<T>> object that contains the solution for the problem
  */
-	public Solution<T> backTrack(State<T>start,State<T>goal)
+	public Solution<T> backTrace(State<T>start,State<T>goal)
 	{
 		ArrayList<T> path=new ArrayList<T>();
 		
@@ -49,10 +49,6 @@ public abstract class CommonSearcher<T> implements Searcher<T> {
 		}
 		path.add(goal.getState());
 		Collections.reverse(path);
-		for (T t : path) {
-			System.out.print("("+t.toString()+") ->");
-		}
-		System.out.println();
 		return new Solution<T>(path);
 	}
 
