@@ -1,5 +1,7 @@
 package algorithms.mazeGenerators;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Krausz Sefi 305371320
@@ -7,7 +9,8 @@ package algorithms.mazeGenerators;
  * @category Position Class
  *
  */
-public class Position {
+@SuppressWarnings("serial")
+public class Position implements Serializable{
 
 	private int y;
 	private int x;
