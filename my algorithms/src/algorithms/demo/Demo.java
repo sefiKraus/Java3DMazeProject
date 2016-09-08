@@ -59,7 +59,7 @@ public class Demo {
 		 System.out.println("Solution with Dfs is: "+solution);
 		 System.out.println("Number of nodes evaluated: "+searcher2.getNumberOfNodesEvaluated());
 
-		 //Compressor and Decompressor Test
+/*		 //Compressor and Decompressor Test
 		OutputStream out=new MyCompressorOutputStream(new FileOutputStream("1.maze"));
 		out.write(maze.toByteArray());
 		out.flush();
@@ -71,7 +71,7 @@ public class Demo {
 		in1.close();
 		
 		Maze3d loaded=new Maze3d(b);
-		System.out.println(loaded.equals(maze));
+		System.out.println(loaded.equals(maze));*/
 
 	}
 	public static void main(String[] args) throws IOException {
