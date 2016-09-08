@@ -15,7 +15,6 @@ public class Dfs<T> extends CommonStackSearcher<T> {
 	@Override
 	public Solution<T> search(Searchable<T> searchable) {
 		
-		State<T>tempPos;
 		State<T>curPosition;
 		curPosition=searchable.getStartState();
 		ArrayList<State<T>>neighbors=new ArrayList<State<T>>();	
