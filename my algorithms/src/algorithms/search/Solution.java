@@ -33,7 +33,7 @@ public class Solution<T> implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Solution other = (Solution) obj;
+		Solution<?> other = (Solution<?>) obj;
 		if (solution == null) {
 			if (other.solution != null)
 				return false;
