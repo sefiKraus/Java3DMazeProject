@@ -16,8 +16,15 @@ public class Properties implements Serializable{
 	private Integer windowWidthSize;
 	private Integer windowHeightSize;
 	private int amountOfThreads;
+
 	public Properties() {
-	
+		this.Ip="127.0.0.1";
+		this.Port="3600";
+		this.sound=false;
+		this.windowHeightSize=400;
+		this.windowWidthSize=400;
+		this.amountOfThreads=1;
+		this.GUI=true;
 	}
 	public Properties(String ip, String port, boolean sound, boolean gUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {
