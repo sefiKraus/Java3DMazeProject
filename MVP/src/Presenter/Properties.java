@@ -82,6 +82,12 @@ public class Properties implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+	public void printProperties()
+	{
+		System.out.println("ip: "+this.getIp()+" Port: "+this.getPort() );
+		System.out.println("Gui mode: "+this.isGUI()+" sound?: "+this.isSound());
+		System.out.println("Thread number: "+this.getAmountOfThreads());
+		System.out.println("Height: "+this.getWindowHeightSize()+" width: "+this.getWindowWidthSize());
+	}
 	
 }
