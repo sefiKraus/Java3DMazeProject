@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_101" class="java.beans.XMLDecoder">
+ <object class="Presenter.Properties">
+  <void property="amountOfThreads">
+   <int>3</int>
+  </void>
+  <void property="ip">
+   <string>127.0.0.2</string>
+  </void>
+  <void property="port">
+   <string>2400</string>
+  </void>
+  <void property="sound">
+   <boolean>true</boolean>
+  </void>
+  <void property="windowHeightSize">
+   <int>200</int>
+  </void>
+  <void property="windowWidthSize">
+   <int>200</int>
+  </void>
+ </object>
+</java>
