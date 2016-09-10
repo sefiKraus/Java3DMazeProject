@@ -15,13 +15,14 @@ public class PropertiesXmlHandler {
 	private static Properties properties;
 	
 	public PropertiesXmlHandler() {
+		
 	}
 	
 	
-	public static void writeProperties() throws FileNotFoundException
+	public static void writeProperties(Properties prop,String path) throws FileNotFoundException
 	{
-		XMLEncoder encoder=new XMLEncoder(new BufferedOutputStream(new FileOutputStream("res/properties.xml")));
-		encoder.writeObject(properties);
+		XMLEncoder encoder=new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)));
+		encoder.writeObject(prop);
 		encoder.flush();
 		encoder.close();
 	}
