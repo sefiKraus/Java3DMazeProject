@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import javax.annotation.PostConstruct;
 
+import algorithms.mazeGenerators.Maze3d;
 import protocol.ClientServerProtocol;
 
 public class MyClientHandler extends CommonClientHandler{
@@ -85,9 +86,25 @@ public class MyClientHandler extends CommonClientHandler{
 		{
 			switch (data) {
 			case "Ready":
+			{
 				this.outToClient.println("Ready");
-				break;
-
+				
+			}
+			break;
+			case "Display maze":
+			{
+				Maze3d maze=(Maze3d)model.getMazeByName((String)obj);
+				if(maze!=null)
+				{
+					this.outToClient.println(maze.toString());
+					
+				}
+				else
+				{
+					this.outToClient.println("Error displaying maze: "+(String)obj);
+				}
+			}
+			break;
 			default:
 				break;
 			}

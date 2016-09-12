@@ -137,4 +137,16 @@ public class MyServerModel extends CommonServerModel{
 		}		
 	}
 
+	@Override
+	public Maze3d getMazeByName(String name) {
+		for (String string : this.getMazeMap().keySet()) {
+			if(string.equals(name))
+			{
+				this.notifyObservers("Display maze");
+				return this.getMazeMap().get(string);
+			}
+		}
+		return null;
+	}
+
 }
