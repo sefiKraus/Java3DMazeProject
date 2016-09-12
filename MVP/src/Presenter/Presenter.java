@@ -123,6 +123,7 @@ public class Presenter implements Observer{
 			@Override
 			public void doCommand(String[] args) {
 				ui.showExit();
+				m.handleExit();
 			}
 		});
 /*		commandMap.put("save solution map", new Command() {
@@ -139,6 +140,13 @@ public class Presenter implements Observer{
 				m.loadSolutionHashMapFromZip();
 			}
 		});*/
+		commandMap.put("open properties", new Command() {
+
+			@Override
+			public void doCommand(String[] args) {
+				
+			}
+		});
 		commandMap.put("help",new Command() {
 
 			@Override

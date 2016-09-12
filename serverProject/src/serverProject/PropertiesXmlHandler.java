@@ -1,4 +1,4 @@
-package Model;
+package serverProject;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -8,12 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import Presenter.Properties;
-/**
- * 
- * @author Krausz sefi
- * @since 10/09/2016
- */
 public class PropertiesXmlHandler {
 
 	private static Properties properties;
@@ -34,7 +28,7 @@ public class PropertiesXmlHandler {
 	{
 		if(properties==null)
 		{
-			properties=readProperties("res/properties.xml");
+			properties=readProperties("resources/properties.xml");
 		}
 		return properties;
 	}

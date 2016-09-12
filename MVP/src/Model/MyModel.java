@@ -48,6 +48,7 @@ public class MyModel extends CommonModel {
 	private HashMap<String, Object> notifications;
 	private ExecutorService threadPool;
 	String settings;
+
 	
 	public MyModel() {
 		this.mazeMap=new HashMap<String,Maze3d>();
@@ -316,6 +317,7 @@ public class MyModel extends CommonModel {
 		}
 		
 	}
+
 
 
 

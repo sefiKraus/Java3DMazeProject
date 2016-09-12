@@ -19,6 +19,7 @@ public interface Model {
 	public void handleExit();
 	public void saveSolutionHashMapToZip();
 	public void loadSolutionHashMapFromZip();
+
 	
 	
 	

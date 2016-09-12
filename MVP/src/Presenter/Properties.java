@@ -1,12 +1,13 @@
 package Presenter;
 
 import java.io.Serializable;
-
+/**
+ * 
+ * @author Krausz sefi
+ * @since 10/09/2016
+ */
 public class Properties implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1986911182174581073L;
 
 	private String Ip;
