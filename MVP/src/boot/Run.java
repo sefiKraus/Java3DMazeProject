@@ -3,7 +3,10 @@ package boot;
 import java.io.FileNotFoundException;
 
 import Model.MyModel;
+import Model.PropertiesXmlHandler;
 import Presenter.Presenter;
+import Presenter.Properties;
+import View.GuiView;
 import View.MyView;
 
 public class Run {
@@ -16,7 +19,7 @@ public class Run {
 		m.addObserver(p);
 		v.addObserver(p);
 		v.start();
-	/*	Properties properties=new Properties("127.0.0.2", "2400", true, true, 200, 200, 3);
+/*		Properties properties=new Properties("127.0.0.2", "2400", true, true, 200, 200, 3);
 		PropertiesXmlHandler handler=new PropertiesXmlHandler();
 		handler.writeProperties(properties, "res/properties.xml");
 		Properties p=handler.getPropertiesInstance();
@@ -24,7 +27,8 @@ public class Run {
 		Properties temp=handler.readProperties("res/properties.xml");
 		temp.printProperties();*/
 
-		
+/*		GuiView view=new GuiView("Test", 400, 400);
+		view.start();*/
 		
 	}
 
