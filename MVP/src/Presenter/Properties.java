@@ -3,7 +3,7 @@ package Presenter;
 import java.io.Serializable;
 /**
  * 
- * @author Krausz sefi
+ * @author Krausz Sefi 305371320
  * @since 10/09/2016
  */
 public class Properties implements Serializable{
@@ -25,7 +25,7 @@ public class Properties implements Serializable{
 		this.windowHeightSize=400;
 		this.windowWidthSize=400;
 		this.amountOfThreads=1;
-		this.GUI=true;
+		this.GUI=false;
 	}
 	public Properties(String ip, String port, boolean sound, boolean gUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {

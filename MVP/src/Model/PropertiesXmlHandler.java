@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import Presenter.Properties;
 /**
  * 
- * @author Krausz sefi
+ * @author Krausz Sefi 305371320
  * @since 10/09/2016
  */
 public class PropertiesXmlHandler {
@@ -22,7 +22,13 @@ public class PropertiesXmlHandler {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param Properties : prop
+	 * @param String : path
+	 * @throws FileNotFoundException
+	 * This method save prop in path
+	 */
 	public static void writeProperties(Properties prop,String path) throws FileNotFoundException
 	{
 		XMLEncoder encoder=new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)));
@@ -38,6 +44,12 @@ public class PropertiesXmlHandler {
 		}
 		return properties;
 	}
+	/**
+	 * 
+	 * @param path : path to load the properties from 
+	 * @return Properties 
+	 * @throws FileNotFoundException
+	 */
 	public static Properties readProperties(String path) throws FileNotFoundException
 	{
 		XMLDecoder decoder=new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));

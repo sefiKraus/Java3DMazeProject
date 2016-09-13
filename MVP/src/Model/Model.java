@@ -5,7 +5,12 @@ import java.util.HashMap;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 02/09/2016
+ *
+ */
 public interface Model {
 
 	public Object getDataFromModel(String required);

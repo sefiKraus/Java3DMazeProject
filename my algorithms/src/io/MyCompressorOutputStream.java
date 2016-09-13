@@ -59,5 +59,6 @@ public class MyCompressorOutputStream extends OutputStream {
 	public void write(int b) throws IOException {
 		out.writeInt(b);
 	}
+	
 
 }

@@ -11,7 +11,12 @@ import algorithms.mazeGenerators.MyMaze3dGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Bfs;
 import algorithms.search.Searchable3dMaze;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 10/09/2016
+ *
+ */
 public class BfsJunitTest {
 
 	Bfs<Position> searcher;

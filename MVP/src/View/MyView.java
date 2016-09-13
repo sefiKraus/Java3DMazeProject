@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -250,7 +252,8 @@ public class MyView extends CommonView implements Observer,View {
 		return command;
 	}
 
-/*	@Override
+
+	@Override
 	public void showSolutionList(HashMap<Maze3d, Solution<Position>> map) {
 		if(!map.isEmpty())
 		{
@@ -267,7 +270,7 @@ public class MyView extends CommonView implements Observer,View {
 				this.showSolution(map.get(maze));
 			}
 		}
-	}*/
+	}
 
 
 

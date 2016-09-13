@@ -7,7 +7,10 @@ import java.util.Observer;
 
 import Model.Model;
 import View.View;
-
+/**
+ * @author Krausz Sefi 305371320
+ * @since 02/09/2016
+ */
 public class Presenter implements Observer{
 
 	private View ui;
@@ -50,7 +53,7 @@ public class Presenter implements Observer{
 				m.handleGenerate(args[3], Integer.parseInt(args[4]), Integer.parseInt(args[5]),Integer.parseInt(args[6]));
 			}
 		});
-		commandMap.put("display (?!cross section by)(?!solution)[^\n\r]+", new Command() {
+		commandMap.put("display (?!cross section by)(?!solution)(?!solution list)[^\n\r]+", new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
@@ -104,7 +107,7 @@ public class Presenter implements Observer{
 				m.handleSolveMaze(args[1],args[2]);
 			}
 		});
-		commandMap.put("display solution [^\n\r]+",new Command() {
+		commandMap.put("display solution (?!list)[^\n\r]+",new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
@@ -115,7 +118,7 @@ public class Presenter implements Observer{
 
 			@Override
 			public void doCommand(String[] args) {
-				
+				ui.showSolutionList(m.getSolutionMap());
 			}
 		});
 		commandMap.put("exit", new Command() {
@@ -126,20 +129,20 @@ public class Presenter implements Observer{
 				m.handleExit();
 			}
 		});
-/*		commandMap.put("save solution map", new Command() {
+		commandMap.put("save solution map", new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
 				m.saveSolutionHashMapToZip();
 			}
-		});*/
-/*		commandMap.put("load solution map", new Command() {
+		});
+		commandMap.put("load solution map", new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
 				m.loadSolutionHashMapFromZip();
 			}
-		});*/
+		});
 		commandMap.put("open properties", new Command() {
 
 			@Override
@@ -147,6 +150,7 @@ public class Presenter implements Observer{
 				
 			}
 		});
+
 		commandMap.put("help",new Command() {
 
 			@Override
@@ -160,9 +164,10 @@ public class Presenter implements Observer{
 				ui.showMessage("load maze <file name| file path> <maze's name>");
 				ui.showMessage("solve <maze's name> <Bfs | Dfs>");
 				ui.showMessage("display solution <maze's name>");
-			//	ui.showMessage("save solution map to save the solutions");
-			//	ui.showMessage("load solution map to load the solutions");
+				ui.showMessage("Type save solution map to save the solutions");
+				ui.showMessage("Type load solution map to load the solutions");
 				ui.showMessage("Type exit to close the game");
+				ui.showMessage("display solution list");
 				ui.showMessage("----------------------------------------------");
 
 			}

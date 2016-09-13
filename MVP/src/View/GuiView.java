@@ -1,5 +1,7 @@
 package View;
 
+import java.util.HashMap;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -7,6 +9,7 @@ import org.eclipse.swt.widgets.Button;
 
 import org.eclipse.swt.widgets.Text;
 
+import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 
@@ -99,6 +102,13 @@ public class GuiView extends CommonGuiView{
 
 	@Override
 	public void showSolution(Solution<Position> solution) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void showSolutionList(HashMap<Maze3d, Solution<Position>> map) {
 		// TODO Auto-generated method stub
 		
 	}

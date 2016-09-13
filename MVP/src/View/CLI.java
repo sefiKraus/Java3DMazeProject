@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Observable;
-
+/**
+ * @author Krausz Sefi 305371320
+ * @since 02/09/2016
+ */
 public class CLI extends Observable implements Runnable {
 	
 	private BufferedReader in;

@@ -8,6 +8,7 @@ package Model;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,6 +25,7 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import Presenter.Properties;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
@@ -47,21 +49,34 @@ public class MyModel extends CommonModel {
 	private HashMap<Maze3d,Solution<Position>> solutionMap;
 	private HashMap<String, Object> notifications;
 	private ExecutorService threadPool;
-	String settings;
+	PropertiesXmlHandler xmlHandler;
+	Properties properties;
 
-	
+	/**
+	 *HashMap<String,Maze3d>() mazeMap
+	 *HashMap<Maze3d,Solution<Position>> soltuionMap
+	 *HashMap<String,Object> notifications
+	 *
+	 */
 	public MyModel() {
 		this.mazeMap=new HashMap<String,Maze3d>();
 		this.solutionMap=new HashMap<Maze3d,Solution<Position>>();
 		this.notifications=new HashMap<String,Object>();
-		this.threadPool=Executors.newFixedThreadPool(1);
+		try {
+			this.properties=PropertiesXmlHandler.getPropertiesInstance();
+			this.threadPool=Executors.newFixedThreadPool(this.properties.getAmountOfThreads());
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * @param name : Maze's name
-	 * @param y : Maze's Levels
-	 * @param x : Maze's Rows
-	 * @param z : Maze's Columns
+	 * @param String name : Maze's name
+	 * @param int y : Maze's Levels
+	 * @param int x : Maze's Rows
+	 * @param int z : Maze's Columns
 	 * 
 	 * This method using Generator methods algorithms.mazeGenerators inside myAlgo.jar
 	 * using callable because the generating needs to run in a different thread
@@ -98,10 +113,10 @@ public class MyModel extends CommonModel {
 		
 	}
 	/**
-	 * @param byteMaze : converted 3D maze to array of bytes
-	 * @param path : the path the user wants to save the maze
+	 * @param byte[] byteMaze : converted 3D maze to array of bytes
+	 * @param String path : the path the user wants to save the maze
 	 * 
-	 * This method using MyCompressorOutputStream inside myAlgo.jar
+	 * This method using MyCompressorOutputStream class inside myAlgo.jar
 	 */
 	@Override
 	public void handleSaveMaze(byte[] byteMaze, String path) {
@@ -116,7 +131,11 @@ public class MyModel extends CommonModel {
 		}
 	}
 
-
+/**
+ * @param String path : path to maze file
+ * @param String name : name given to loaded maze
+ * This method using MyDecompressorInputStream class inside myAlgo.jar 
+ */
 	@Override
 	public void handleLoadMaze(String path, String name) {
 		try{
@@ -125,13 +144,15 @@ public class MyModel extends CommonModel {
 				
 			DataInputStream in=new DataInputStream(new FileInputStream(path));
 			int size=in.readInt();
-			int i=9;
+			int i=9; 
 			in.close();
 			MyDecompressorInputStream decompressor=new MyDecompressorInputStream(new FileInputStream(path));
 			byte[] byteMaze=new byte[size+i];
 			decompressor.read(byteMaze);
 			decompressor.close();
 			Maze3d decompressedMaze=new Maze3d(byteMaze);
+			decompressedMaze.setPlayerPosition(new Position(decompressedMaze.getStartPosition().getY()
+					, decompressedMaze.getStartPosition().getX(), decompressedMaze.getStartPosition().getZ()));
 			this.mazeMap.put(name, decompressedMaze);
 			this.noteObservers("Loaded","Maze successfully loaded from: "+path);
 			}
@@ -147,6 +168,13 @@ public class MyModel extends CommonModel {
 
 		
 	}
+	
+	/**
+	 * @param String name : Name of maze we wish to solve.
+	 * @param String algorithmUsed : algorithm name we wish to use in order to solve maze.
+	 * 	Relevant algorithms : DFS,BFS
+	 * This method is using threadPool.submit(new Callable<Solution<Position>>()) in order to allow it to run in a different Thread
+	 */
 	@Override
 	public void handleSolveMaze(String name, String algorithmUsed) {
 		Future<Solution<Position>> solution=null;
@@ -160,6 +188,7 @@ public class MyModel extends CommonModel {
 			}
 			else if(algorithmUsed.matches("[Dd][Ff][Ss]"))
 			{
+				
 				solution=this.threadPool.submit(new Callable<Solution<Position>>() {
 
 					@Override
@@ -220,7 +249,12 @@ public class MyModel extends CommonModel {
 	}
 
 
-
+/**
+ * 
+ * @param s
+ * @param data
+ * This method sends messages to its observers
+ */
 
 	public void noteObservers(String s,Object data)
 	{
@@ -229,17 +263,21 @@ public class MyModel extends CommonModel {
 		this.notifyObservers(s);
 	}
 	
-	
+/**
+ * @param String required : Data saved in notifications after using noteObservers method
+ * @return Object
+ */
+	@Override
+	public Object getDataFromModel(String required) {
+		return notifications.get(required);
+	}
 
 	@Override
 	public void handleDirContent(String path) {
 			
 	}
 
-	@Override
-	public Object getDataFromModel(String required) {
-		return notifications.get(required);
-	}
+
 
 	@Override
 	public HashMap<String, Maze3d> getMazeMap() {
@@ -253,7 +291,9 @@ public class MyModel extends CommonModel {
 	}
 
 	
-	
+	/**
+	 * This method save the solution map in solutions.zip using GZIPOutputStream class
+	 */
 	@Override
 	public void saveSolutionHashMapToZip() {
 		HashMap<byte[],Solution<Position>> cashed=new HashMap<byte[],Solution<Position>>();
@@ -261,6 +301,7 @@ public class MyModel extends CommonModel {
 		while(itr.hasNext())
 		{
 			Maze3d maze=itr.next();
+			
 			try {
 				cashed.put(maze.toByteArray(), solutionMap.get(maze));
 			} catch (IOException e) {
@@ -276,6 +317,7 @@ public class MyModel extends CommonModel {
 			objOut.flush();
 			objOut.close();
 			fileOut.close();
+			this.noteObservers("Save","Solution map is saved in solutions.zip");
 		} catch (Exception  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -283,7 +325,9 @@ public class MyModel extends CommonModel {
 		
 		
 	}
-
+	/**
+	 * This method load the solution map from solutions.zip using GZIPInputStream class
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void loadSolutionHashMapFromZip() {
@@ -315,9 +359,9 @@ public class MyModel extends CommonModel {
 				e.printStackTrace();
 			}
 		}
-		
-	}
+		this.noteObservers("Loaded", "Solution map was successfully loaded");
 
+	}
 
 
 
