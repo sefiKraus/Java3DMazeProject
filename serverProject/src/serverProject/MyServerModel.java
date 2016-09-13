@@ -1,20 +1,79 @@
 package serverProject;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 
 public class MyServerModel extends CommonServerModel{
+	volatile boolean stop;
+	private Properties properties;
+	private ArrayList<ClientHandler> clientList;
+	private ServerSocket serverSocket;
+	private int serverPort;
+	private HashMap<String, Object>notifications;
+	private HashMap<String, Maze3d>mazeMap;
+	private HashMap<Maze3d, Solution<Position>> solutionMap;
+	private ExecutorService threadPool;
+	private Thread serverMainThread;
+	public MyServerModel() {
+		try {
+			this.properties=PropertiesXmlHandler.getPropertiesInstance();
+			this.threadPool=Executors.newFixedThreadPool(this.properties.getAmountOfClients());
+			this.clientList=new ArrayList<ClientHandler>();
+			this.mazeMap=new HashMap<String, Maze3d>();
+			this.solutionMap=new HashMap<Maze3d, Solution<Position>>();
+			this.notifications=new HashMap<String, Object>();
+			this.serverPort=this.properties.getServerPort();
+			this.serverSocket=new ServerSocket(this.serverPort);
+			this.stop=true;
+			this.start(this);
+			
+			
+		} catch ( IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 
-	
-	
-	
+	@Override
+	public void start(MyServerModel model) {
+		this.serverMainThread=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				while(!stop)
+				{
+					try {
+						final Socket someClient=serverSocket.accept();
+						if(someClient!=null)
+						{
+							MyClientHandler tempClient=new MyClientHandler(someClient,model);
+							clientList.add(tempClient);
+							model.addObserver(tempClient);
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
@@ -149,5 +208,7 @@ public class MyServerModel extends CommonServerModel{
 		}
 		return null;
 	}
+
+
 
 }

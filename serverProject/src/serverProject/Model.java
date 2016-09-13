@@ -26,7 +26,8 @@ public interface Model {
 	public ServerSocket getServerSocket();
 	public int getServerPort();
 	public void activateMethod(String name,Object[] args);
-	public Maze3d getMazeByName(String name	);
+	public Maze3d getMazeByName(String name);
+	public void start(MyServerModel model);
 	
 	
 	
