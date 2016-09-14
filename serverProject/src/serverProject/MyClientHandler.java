@@ -7,60 +7,68 @@ import java.net.Socket;
 import java.util.Observable;
 
 import algorithms.mazeGenerators.Maze3d;
+import protocol.MyClientHandlerProtocol;
+import protocol.ServerProtocol;
 
 public class MyClientHandler extends CommonClientHandler{
-
+	volatile boolean stop;
 	private Socket clientSocket;
 	private Object data;
 	private BufferedReader inFromClient;
 	private PrintWriter outToClient;
 	private Model model;
+	private Thread clientHandlerThread;
+	private ServerProtocol clientHandlerProtocol;
 	public MyClientHandler(Socket clientSocket,Model model) {
 		this.model=model;
-		this.addObserver((CommonServerModel)model);
 		this.clientSocket=clientSocket;
+		this.addObserver((CommonServerModel)model);
 		try {
 			this.inFromClient=new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			this.outToClient=new PrintWriter(clientSocket.getOutputStream());
+			this.clientHandlerProtocol=new MyClientHandlerProtocol(this.model,this.clientSocket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		this.stop=true;
+		this.run();
 	}
-	
-	@Override
-	public void handleClient() {
-		/*
-		 * line= name of method we want to activate
-		 * size=amount of parameters passed
-		 * string[] params= parameters passed
-		 * This method using reflection pattern
-		 */
-		String line;
-		String name;
-		String[] params;
-		int size;
-		try {
-			while(!(line=this.inFromClient.readLine()).equals("exit"))
-			{
-				params=line.split(",");
-				name=params[0];
-				size=Integer.valueOf(params[1]);
-				Object[] objects=new Object[size];
-				for(int i=0;i<objects.length;i++)
-				{
-					objects[i]=(Object)params[i+2];
-				}
-				model.activateMethod(name, objects);
+
+	public void run() {
+		this.clientHandlerThread=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String line;
+				
+				try {
+					while(!(line=inFromClient.readLine()).equals("exit"))
+					{
+						/*outToClient.println(line);
+						outToClient.flush();*/
+						outToClient.println("recived command: "+line);
+						outToClient.flush();
+						for (String string : clientHandlerProtocol.getCommandMap().keySet()) {
+							if(line.matches(string))
+							{
+								String[] params=line.split(" ");
+								clientHandlerProtocol.getCommandMap().get(string).doCommand(params);
+
+							}
+						}
+					}
+					closeClientHandler();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
-			this.closeClientHandler();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		});
+		this.clientHandlerThread.start();
+	
 	}
+
 
 	@Override
 	public Object getData() {
@@ -80,24 +88,10 @@ public class MyClientHandler extends CommonClientHandler{
 			switch (data) {
 			case "Ready":
 			{
-				this.outToClient.println("Ready");
 				
 			}
-			break;
-			case "Display maze":
-			{
-				Maze3d maze=(Maze3d)model.getMazeByName((String)obj);
-				if(maze!=null)
-				{
-					this.outToClient.println(maze.toString());
-					
-				}
-				else
-				{
-					this.outToClient.println("Error displaying maze: "+(String)obj);
-				}
-			}
-			break;
+				break;
+
 			default:
 				break;
 			}
@@ -118,6 +112,29 @@ public class MyClientHandler extends CommonClientHandler{
 
 	}
 
+	public Socket getClientSocket() {
+		return clientSocket;
+	}
+
+	public void setClientSocket(Socket clientSocket) {
+		this.clientSocket = clientSocket;
+	}
+
+	public BufferedReader getInFromClient() {
+		return inFromClient;
+	}
+
+	public void setInFromClient(BufferedReader inFromClient) {
+		this.inFromClient = inFromClient;
+	}
+
+	public PrintWriter getOutToClient() {
+		return outToClient;
+	}
+
+	public void setOutToClient(PrintWriter outToClient) {
+		this.outToClient = outToClient;
+	}
 
 	
 }
