@@ -133,7 +133,7 @@ public class MyServerModel extends CommonServerModel {
 						else
 						{
 							PrintWriter outToClient=new PrintWriter(someClient.getOutputStream());
-							outToClient.println("Server is busy please try again later");
+							outToClient.println("Error Server is busy please try again later");
 							outToClient.flush();
 							outToClient.close();
 						}

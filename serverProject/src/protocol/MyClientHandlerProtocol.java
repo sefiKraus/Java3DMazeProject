@@ -91,18 +91,19 @@ public class MyClientHandlerProtocol implements ServerProtocol{
 		});
 		commandMap.put("display solution (?!list)[^\n\r]+",new Command() {
 
-			@SuppressWarnings("null")
 			@Override
 			public void doCommand(String[] args) {
 				outToClient.println("SolvedAlready");
 				outToClient.flush();
 				Solution<Position>tempSolution=model.getSolutionMap().get(model.getMazeMap().get(args[2]));
 				ArrayList<Position>positionList=tempSolution.getSolution();
-				String positions = null;
+				StringBuilder sb = new StringBuilder(positionList.size());
 				for (Position position : positionList) {
-					positions.concat(position.toString()+" ");
+					sb.append("(");
+					sb.append(position.toString());
+					sb.append("),");
 				}
-				outToClient.println(positions);
+				outToClient.println(sb.toString());
 				outToClient.flush();
 			}
 		});
