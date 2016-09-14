@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observable;
 
-import algorithms.mazeGenerators.Maze3d;
 import protocol.MyClientHandlerProtocol;
 import protocol.ServerProtocol;
 

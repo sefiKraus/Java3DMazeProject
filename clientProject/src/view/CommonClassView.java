@@ -1,5 +1,8 @@
 package view;
 
-abstract class CommonClassView implements ClientView{
+import java.util.Observable;
 
+abstract class CommonClassView extends Observable implements ClientView{
+
+	String viewName;
 }

@@ -1,7 +1,6 @@
 package serverProject;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -10,7 +9,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +23,6 @@ import algorithms.search.CommonSearcher;
 import algorithms.search.Dfs;
 import algorithms.search.Searchable3dMaze;
 import algorithms.search.Solution;
-import protocol.Command;
 import protocol.ServerProtocol;
 
 public class MyServerModel extends CommonServerModel {
@@ -228,11 +225,14 @@ try {
 			outToClient.println("SolvedAlready");
 			outToClient.flush();
 			Solution<Position>tempSolution=this.solutionMap.get(this.mazeMap.get(name));
-			String solutionString=null;
-			for (Position pos : tempSolution.getSolution()) {
-				solutionString.concat(pos.toString()+" ");
+			ArrayList<Position>positionList=tempSolution.getSolution();
+			StringBuilder sb = new StringBuilder(positionList.size());
+			for (Position position : positionList) {
+				sb.append("(");
+				sb.append(position.toString());
+				sb.append("),");
 			}
-			outToClient.println(solutionString);
+			outToClient.println(sb.toString());
 			outToClient.flush();
 		}
 		else if(algorithmUsed.matches("[Dd][Ff][Ss]"))
