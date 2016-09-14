@@ -45,10 +45,7 @@ public class MyClientHandler extends CommonClientHandler{
 				try {
 					while(!(line=inFromClient.readLine()).equals("exit"))
 					{
-						/*outToClient.println(line);
-						outToClient.flush();*/
-						outToClient.println("recived command: "+line);
-						outToClient.flush();
+
 						for (String string : clientHandlerProtocol.getCommandMap().keySet()) {
 							if(line.matches(string))
 							{

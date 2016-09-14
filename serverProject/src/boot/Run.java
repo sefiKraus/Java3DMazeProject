@@ -56,8 +56,41 @@ static volatile boolean stop;
 								
 							}
 							break;
+							case "DisplayCross":
+							{
+								DataInputStream dIn = new DataInputStream(client.getInputStream());
+								int length = dIn.readInt();  
+								if(length>0) {
+								    byte[] byteMaze = new byte[length];
+								    dIn.readFully(byteMaze, 0, byteMaze.length); // read the message
+								    Maze3d maze3d=new Maze3d(byteMaze);
+								   // maze3d.printMaze();
+								    //TODO: create method in client side and send it following params: maze3d, cross by and index
+								}
+							}
+							break;
+							case "Solved":
+							{
+								System.out.println(dataRecieved);
+
+							}
+							break;
+							case "SolvedAlready":
+							{
+								String line=in.readLine();
+								System.out.println(line);
+							}
+							break;
 							
+							case "Error":
+							{
+								System.out.println(dataRecieved);
+							}
+							break;
 							default:
+							{
+								System.out.println(dataRecieved);
+							}
 								break;
 							}
 						}

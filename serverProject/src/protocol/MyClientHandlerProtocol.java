@@ -5,8 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import serverProject.Model;
 
 public class MyClientHandlerProtocol implements ServerProtocol{
@@ -58,8 +62,7 @@ public class MyClientHandlerProtocol implements ServerProtocol{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				outToClient.println(model.getMazeMap().get(args[1]).toString());
-				outToClient.flush();
+
 			}
 		} );	
 		this.commandMap.put("display cross section by [XYZxyz] [0-9]+ for [^\n\r]+", new Command() {
@@ -67,7 +70,12 @@ public class MyClientHandlerProtocol implements ServerProtocol{
 			@Override
 			public void doCommand(String[] args) {
 				try {
-					outToClient.println(model.getMazeMap().get(args[7]).toByteArray());
+					outToClient.println("DisplayCross");
+					outToClient.flush();
+					
+					DataOutputStream dOut = new DataOutputStream(clientSocket.getOutputStream());
+					dOut.writeInt((model.getMazeMap().get(args[7])).toByteArray().length);
+					dOut.write(model.getMazeMap().get(args[7]).toByteArray());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -83,9 +91,19 @@ public class MyClientHandlerProtocol implements ServerProtocol{
 		});
 		commandMap.put("display solution (?!list)[^\n\r]+",new Command() {
 
+			@SuppressWarnings("null")
 			@Override
 			public void doCommand(String[] args) {
-				outToClient.println(model.getSolutionMap().get(model.getMazeMap().get(args[2])));
+				outToClient.println("SolvedAlready");
+				outToClient.flush();
+				Solution<Position>tempSolution=model.getSolutionMap().get(model.getMazeMap().get(args[2]));
+				ArrayList<Position>positionList=tempSolution.getSolution();
+				String positions = null;
+				for (Position position : positionList) {
+					positions.concat(position.toString()+" ");
+				}
+				outToClient.println(positions);
+				outToClient.flush();
 			}
 		});
 		commandMap.put("display solution list", new Command() {

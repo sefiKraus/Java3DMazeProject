@@ -20,6 +20,10 @@ import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.Bfs;
+import algorithms.search.CommonSearcher;
+import algorithms.search.Dfs;
+import algorithms.search.Searchable3dMaze;
 import algorithms.search.Solution;
 import protocol.Command;
 import protocol.ServerProtocol;
@@ -190,7 +194,6 @@ public class MyServerModel extends CommonServerModel {
 				});
 				try {
 					this.mazeMap.put(name, futureMaze.get());
-					//this.noteObservers("Ready",name);
 					outToClient.println("Ready "+name+" has been generated please type: display "+name+" when you ready");
 					outToClient.flush();
 				}  catch (Exception e)
@@ -213,8 +216,89 @@ public class MyServerModel extends CommonServerModel {
 
 	@Override
 	public void handleSolveMaze(Socket clientSocket,String name, String algorithmUsed) {
-		// TODO Auto-generated method stub
-		
+Future<Solution<Position>> solution=null;
+PrintWriter outToClient;
+try {
+	outToClient = new PrintWriter(clientSocket.getOutputStream());
+
+	if((algorithmUsed.matches("[Dd][Ff][Ss]")||algorithmUsed.matches("[Bb][Ff][Ss]"))&& this.mazeMap.containsKey(name))
+	{
+		if(this.solutionMap.containsKey(this.mazeMap.get(name)))
+		{
+			outToClient.println("SolvedAlready");
+			outToClient.flush();
+			Solution<Position>tempSolution=this.solutionMap.get(this.mazeMap.get(name));
+			String solutionString=null;
+			for (Position pos : tempSolution.getSolution()) {
+				solutionString.concat(pos.toString()+" ");
+			}
+			outToClient.println(solutionString);
+			outToClient.flush();
+		}
+		else if(algorithmUsed.matches("[Dd][Ff][Ss]"))
+		{
+			
+			solution=this.threadPool.submit(new Callable<Solution<Position>>() {
+
+				@Override
+				public Solution<Position> call() throws Exception {
+					CommonSearcher<Position> searcher=new Dfs<Position>();
+					Searchable3dMaze searchable3dMaze=new Searchable3dMaze(mazeMap.get(name));
+					ArrayList<Position> solution=new ArrayList<Position>();
+					solution=searcher.search(searchable3dMaze).getSolution();
+					return new Solution<Position>(solution);
+				}
+			});
+			try{
+				this.solutionMap.put(this.mazeMap.get(name),solution.get());
+				outToClient.println("Solved Solution for: "+name+" with algorithm: "+algorithmUsed+" is ready");
+				outToClient.flush();
+			}catch(Exception e)
+			{
+				outToClient.println("Error Encountered problem during solving: "+name+" with algorithm: "+algorithmUsed);
+				outToClient.flush();
+				e.printStackTrace();
+			}
+		}
+		else if(algorithmUsed.matches("[Bb][Ff][Ss]"))
+		{
+			solution=this.threadPool.submit(new Callable<Solution<Position>>() {
+
+				@Override
+				public Solution<Position> call() throws Exception {
+					
+					CommonSearcher<Position> searcher=new Bfs<Position>();
+					Searchable3dMaze searchable3dMaze=new Searchable3dMaze(mazeMap.get(name));
+					ArrayList<Position> solution=new ArrayList<Position>();
+					solution=searcher.search(searchable3dMaze).getSolution();
+					return new Solution<Position>(solution);
+				}
+			});
+			try
+			{
+				this.solutionMap.put(this.mazeMap.get(name),solution.get());
+				outToClient.println("Solved Solution for: "+name+" with algorithm: "+algorithmUsed+" is ready");
+				outToClient.flush();
+			}
+			catch(Exception e)
+			{
+				outToClient.println("Error Encountered problem during solving: "+name+" with algorithm: "+algorithmUsed);
+				outToClient.flush();
+				e.printStackTrace();
+			}
+		}
+			
+	}
+	else
+	{
+		outToClient.println("Error solving maze with algorithm: "+algorithmUsed+" please enter valid algorithm");
+		outToClient.flush();
+	}		
+} catch (IOException e1) {
+	// TODO Auto-generated catch block
+	e1.printStackTrace();
+}
+
 	}
 
 	@Override
