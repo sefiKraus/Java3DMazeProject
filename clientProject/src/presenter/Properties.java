@@ -8,6 +8,7 @@ public class Properties implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int serverPort;
+	private String serverIp;
 	private boolean Gui;
 	private int widthSize;
 	private int heightSize;
@@ -55,6 +56,16 @@ public class Properties implements Serializable {
 
 	public void setHeightSize(int heightSize) {
 		this.heightSize = heightSize;
+	}
+
+
+	public String getServerIp() {
+		return serverIp;
+	}
+
+
+	public void setServerIp(String serverIp) {
+		this.serverIp = serverIp;
 	}
 
 }

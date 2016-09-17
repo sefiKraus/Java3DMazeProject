@@ -84,7 +84,8 @@ public class MyClientHandler extends CommonClientHandler{
 			switch (data) {
 			case "Ready":
 			{
-				
+				outToClient.print("Test");
+				outToClient.flush();
 			}
 				break;
 
