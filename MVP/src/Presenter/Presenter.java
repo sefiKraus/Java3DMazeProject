@@ -270,6 +270,11 @@ public class Presenter implements Observer{
 				this.activateCommand((String)ui.getDataFromView("SaveMaze"));
 			}
 			break;
+			case("LoadMaze"):
+			{
+				this.activateCommand((String)ui.getDataFromView("LoadMaze"));
+			}
+			break;
 			default:
 				break;
 			}

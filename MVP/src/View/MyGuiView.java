@@ -12,19 +12,16 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Transform;
-import org.eclipse.swt.internal.win32.GESTURECONFIG;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -37,21 +34,23 @@ public class MyGuiView extends CommonGuiView{
 	HashMap<String, Object>notifications;
 	
 	Button generateBtn,submitMazeData,displayBtn,
-			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,exitBtn,saveSubmit;
+			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,exitBtn,saveSubmit
+			,solveBtn,submitSolveMaze;
 	
 	Text  mazeNameText,yAxisText,xAxisText,zAxisText,mazeName,dirPathText, messageText;
 	
 	Label mazeLabel,yAxisLabel,xAxisLabel, zAxisLabel,mazeNameLabel,dirPathLabel;
 	
-	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm;
+	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm,solveForm;
 	
 	MazeDisplay mazeDisplayer;
 	
+	Combo solveCombo;
 	Maze3d maze;
 	
 	KeyListener keyListener;
 	
-	List mazeList;
+	List mazeList,solutionList;
 	
 	Shell mazeShell;
 	public MyGuiView(String windowTitle, int width, int height) {
@@ -76,7 +75,7 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[This is another composite in main window]--------------------*/
 		 dataDisplayer=new Composite(shell, SWT.BORDER);
 		dataDisplayer.setLayout(generateStackLayout);
-		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,7));
+		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,8));
 		
 		
 		/*--------------------[Maze Properties form after pressing Generate 3D maze btn]--------------------*/
@@ -129,13 +128,7 @@ public class MyGuiView extends CommonGuiView{
 			
 			
 		
-		/*--------------------[This is another composite in main window]--------------------*/
 
-		
-		/*final Text test=new Text(dataDisplayer, SWT.MULTI);
-		test.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,6));
-		test.pack();
-		*/
 	/*****************************************************************************************/
 		
 		/*--------------------[Display Maze Button]--------------------*/
@@ -164,10 +157,22 @@ public class MyGuiView extends CommonGuiView{
 		
 		
 		/*--------------------[Solve Maze Button]--------------------*/
+			solveBtn=new Button(shell, SWT.PUSH);
+			solveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+			solveBtn.setText("Solve Maze");
+			
+			solveForm=new Composite(dataDisplayer, SWT.BORDER);
+			solveForm.setLayout(new GridLayout(1,false));
+			
+			solveCombo=new Combo(solveForm, SWT.DROP_DOWN);
+			solveCombo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+			solveCombo.pack();
 		
-		
-		
-		
+			
+			submitSolveMaze=new Button(solveForm, SWT.PUSH);
+			submitSolveMaze.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
+			submitSolveMaze.setText("Submit Your Request");
+			submitSolveMaze.pack();
 		
 		/*************************************************************/
 		
@@ -307,7 +312,21 @@ public class MyGuiView extends CommonGuiView{
 				
 			}
 		});
-		
+		solveBtn.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				generateStackLayout.topControl=solveForm;
+				dataDisplayer.layout();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		saveBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -366,14 +385,25 @@ public class MyGuiView extends CommonGuiView{
 		loadBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
-			public void widgetSelected(SelectionEvent arg0) {
+			public void widgetSelected(SelectionEvent e) {
 
 				FileDialog fd=new FileDialog(shell,SWT.OPEN);
 				fd.setText("open");
 				fd.setFilterPath("");
 				String[] filterExt = { "*.txt", "*.java", ".xml", "*.*" };
-				fd.setFilterExtensions(filterExt);
+				//fd.setFilterExtensions(filterExt);
 				String selected = fd.open();
+				if(selected!=null)
+				{
+				String fullMazeName=fd.getFileName();
+				int index=fullMazeName.indexOf(".");
+				String mazeName=fullMazeName.substring(0, index);
+			
+					notifications.put("LoadMaze", "load maze "+selected+" "+mazeName);
+					setChanged();
+					notifyObservers("LoadMaze");
+			
+				}
 
 			}
 			
