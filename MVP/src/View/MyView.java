@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
-
+import java.util.Set;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -270,6 +270,12 @@ public class MyView extends CommonView implements Observer,View {
 				this.showSolution(map.get(maze));
 			}
 		}
+	}
+
+	@Override
+	public void showMazeList(Set<String> set) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

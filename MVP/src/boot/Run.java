@@ -2,12 +2,14 @@ package boot;
 
 import java.io.FileNotFoundException;
 
+import Model.Model;
 import Model.MyModel;
 import Model.PropertiesXmlHandler;
 import Presenter.Presenter;
 import Presenter.Properties;
 import View.MyGuiView;
 import View.MyView;
+import View.View;
 
 public class Run {
 
@@ -28,6 +30,10 @@ public class Run {
 		temp.printProperties();*/
 
 		MyGuiView view=new MyGuiView("Test", 600, 600);
+		MyModel model=new MyModel();
+		Presenter p=new Presenter(view, model);
+		view.addObserver(p);
+		model.addObserver(p);
 		view.start();
 		
 	}

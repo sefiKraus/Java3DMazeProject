@@ -2,6 +2,7 @@ package View;
 
 
 import java.util.HashMap;
+import java.util.Set;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -23,6 +24,6 @@ public interface View {
 	public void showCrossSection(byte[] byteMaze,String axies,int index,String name);
 	public void showSolutionList(HashMap<Maze3d,Solution<Position>>map);
 	public void showSolution(Solution<Position>solution);
-
+	public void showMazeList(Set<String> set);
 	
 }

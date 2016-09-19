@@ -172,6 +172,13 @@ public class Presenter implements Observer{
 
 			}
 		});
+		commandMap.put("get maze list", new Command() {
+
+			@Override
+			public void doCommand(String[] args) {
+				ui.showMazeList(m.getMazeMap().keySet());
+			}
+		});
 	}
 
 	@Override
@@ -241,7 +248,28 @@ public class Presenter implements Observer{
 
 			}
 				break;
-
+			case("GenerateMaze"):
+			{
+				this.activateCommand((String)ui.getDataFromView("GenerateMaze"));
+				
+				
+			}
+			break;
+			case("DisplayMaze"):
+			{
+				this.activateCommand((String)ui.getDataFromView("DisplayMaze"));
+			}
+			break;
+			case("MazeList"):
+			{
+				this.activateCommand((String)ui.getDataFromView("MazeList"));
+			}
+			break;
+			case("SaveMaze"):
+			{
+				this.activateCommand((String)ui.getDataFromView("SaveMaze"));
+			}
+			break;
 			default:
 				break;
 			}
@@ -272,5 +300,15 @@ public class Presenter implements Observer{
 		this.commandMap = commandMap;
 	}
 
-
+	public void activateCommand(String command)
+	{
+		for (String s : this.commandMap.keySet()) {
+			if(command.matches(s))
+			{
+				String[] arguments=command.split(" ");
+				this.commandMap.get(s).doCommand(arguments);
+			}
+		}
+		
+	}
 }
