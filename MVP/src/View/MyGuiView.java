@@ -1,10 +1,12 @@
 package View;
 
-import java.awt.Scrollbar;
-import java.io.IOException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -15,13 +17,13 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.junit.internal.builders.SuiteMethodBuilder;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -32,30 +34,34 @@ import widgets.MyMazeDisplayWidgets;
 public class MyGuiView extends CommonGuiView{
 
 	HashMap<String, Object>notifications;
-	
 	Button generateBtn,submitMazeData,displayBtn,
 			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,exitBtn,saveSubmit
-			,solveBtn,submitSolveMaze;
+			,solveBtn,submitSolveMaze,displaySolutionBtn,submitSolution;
 	
 	Text  mazeNameText,yAxisText,xAxisText,zAxisText,mazeName,dirPathText, messageText;
 	
-	Label mazeLabel,yAxisLabel,xAxisLabel, zAxisLabel,mazeNameLabel,dirPathLabel;
+	Label mazeLabel,yAxisLabel,xAxisLabel, zAxisLabel,mazeNameLabel
+			,dirPathLabel,solveMazeLabel,solveWithAlgo,displaySolutionFor;
 	
-	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm,solveForm;
+	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm,solveForm,displaySolutionForm;
 	
 	MazeDisplay mazeDisplayer;
 	
-	Combo solveCombo;
+	HashMap<String, Solution<Position>>mazeSolMap;
 	Maze3d maze;
 	
 	KeyListener keyListener;
 	
-	List mazeList,solutionList;
+	List mazeList,solutionList,solveMazeList,algoList;
 	
 	Shell mazeShell;
+	
+	Timer timer;
+	TimerTask myTimerTask;
 	public MyGuiView(String windowTitle, int width, int height) {
 		super(windowTitle, width, height);
 		this.notifications=new HashMap<String,Object>();
+		this.mazeSolMap=new HashMap<String, Solution<Position>>();
 		
 	}
 
@@ -75,7 +81,7 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[This is another composite in main window]--------------------*/
 		 dataDisplayer=new Composite(shell, SWT.BORDER);
 		dataDisplayer.setLayout(generateStackLayout);
-		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,8));
+		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,9));
 		
 		
 		/*--------------------[Maze Properties form after pressing Generate 3D maze btn]--------------------*/
@@ -162,11 +168,25 @@ public class MyGuiView extends CommonGuiView{
 			solveBtn.setText("Solve Maze");
 			
 			solveForm=new Composite(dataDisplayer, SWT.BORDER);
-			solveForm.setLayout(new GridLayout(1,false));
+			solveForm.setLayout(new GridLayout(2,false));
 			
-			solveCombo=new Combo(solveForm, SWT.DROP_DOWN);
-			solveCombo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
-			solveCombo.pack();
+			solveMazeLabel=new Label(solveForm, SWT.NONE);
+			solveMazeLabel.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+			solveMazeLabel.setText("Choose Maze To Solve: ");
+			solveMazeLabel.pack();
+			
+			solveMazeList=new List(solveForm, SWT.DROP_DOWN|SWT.READ_ONLY);
+			solveMazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+			solveMazeList.pack();
+			
+			solveWithAlgo=new Label(solveForm, SWT.NONE);
+			solveWithAlgo.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+			solveWithAlgo.setText("Choose Algorithm: ");
+			solveWithAlgo.pack();
+			
+			algoList=new List(solveForm, SWT.DROP_DOWN|SWT.READ_ONLY);
+			algoList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+			algoList.pack();
 		
 			
 			submitSolveMaze=new Button(solveForm, SWT.PUSH);
@@ -176,7 +196,32 @@ public class MyGuiView extends CommonGuiView{
 		
 		/*************************************************************/
 		
-		
+			/*--------------------[Display Solution Button]--------------------*/
+				displaySolutionBtn=new Button(shell, SWT.PUSH);
+				displaySolutionBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+				displaySolutionBtn.setText("Display Solutions");
+				
+				displaySolutionForm=new Composite(dataDisplayer, SWT.BORDER);
+				displaySolutionForm.setLayout(new GridLayout(2,false));
+				
+				displaySolutionFor=new Label(displaySolutionForm, SWT.NONE);
+				displaySolutionFor.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+				displaySolutionFor.setText("Choose a maze to solve: ");
+				displaySolutionFor.pack();
+				
+				solutionList=new List(displaySolutionForm, SWT.READ_ONLY|SWT.DROP_DOWN);
+				solutionList.setLayoutData(new GridData(SWT.NONE,SWT.NONE,true,false,1,1));
+				solutionList.pack();
+				
+				submitSolution=new Button(displaySolutionForm, SWT.PUSH);
+				submitSolution.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
+				submitSolution.setText("Submit Your Solution Request");
+				submitSolution.pack();
+				
+			
+			/*************************************************************/
+
+
 		/*--------------------[Save Maze Button]--------------------*/
 		
 		
@@ -316,7 +361,53 @@ public class MyGuiView extends CommonGuiView{
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				notifications.put("MazeList", "get maze list");
+				setChanged();
+				notifyObservers("MazeList");
 				generateStackLayout.topControl=solveForm;
+				dataDisplayer.layout();
+				solveMazeList.setItems(mazeList.getItems());
+				String[] algorithms={"BFS","DFS"};
+				algoList.setItems(algorithms);
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		submitSolveMaze.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				if(solveMazeList.getSelection()[0].length()>0 && algoList.getSelection()[0].length()>0)
+				{
+					String mazeName=solveMazeList.getSelection()[0];
+					String algoName=algoList.getSelection()[0];
+					
+					notifications.put("Solve", "solve "+mazeName+" "+algoName);
+					setChanged();
+					notifyObservers("Solve");
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		displaySolutionBtn.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				notifications.put("SolutionListRequest","display solution list");
+				setChanged();
+				notifyObservers("SolutionListRequest");
+				generateStackLayout.topControl=displaySolutionForm;
 				dataDisplayer.layout();
 				
 			}
@@ -327,6 +418,25 @@ public class MyGuiView extends CommonGuiView{
 				
 			}
 		});
+		
+		
+		submitSolution.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				String mazeName=submitSolution.getText().toString();
+				showSolution(mazeName,mazeSolMap.get(mazeName));
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
 		saveBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -391,7 +501,7 @@ public class MyGuiView extends CommonGuiView{
 				fd.setText("open");
 				fd.setFilterPath("");
 				String[] filterExt = { "*.txt", "*.java", ".xml", "*.*" };
-				//fd.setFilterExtensions(filterExt);
+				fd.setFilterExtensions(filterExt);
 				String selected = fd.open();
 				if(selected!=null)
 				{
@@ -452,13 +562,13 @@ public class MyGuiView extends CommonGuiView{
 		
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
-			mazeShell.setLayout(new GridLayout(1,false));
+			mazeShell.setLayout(new GridLayout(2,false));
 			//mazeShell.setSize(400,400);
 			 maze=new Maze3d(byteMaze);
 			 maze.printMaze();
 			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.NONE,maze);
 			//this.mazeDisplayer=new MazeDisplay(mazeShell, SWT.NONE,new Maze3d(byteMaze));
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeShell.setText("Maze Game");
 			this.mazeShell.open();
@@ -559,15 +669,28 @@ public class MyGuiView extends CommonGuiView{
 	}
 
 	@Override
-	public void showSolutionList(HashMap<Maze3d, Solution<Position>> map) {
-		// TODO Auto-generated method stub
+	public void showSolutionList(HashMap<String, Maze3d>mazeMap,  HashMap<Maze3d, Solution<Position>> solutionMap) {
+			
+		Iterator<Maze3d> itr=solutionMap.keySet().iterator();
+		
+		while(itr.hasNext())
+		{
+			Maze3d maze=itr.next();
+			for (String mazeName : mazeMap.keySet()) {
+				if(maze.equals(mazeMap.get(mazeName)))
+				{
+					solutionList.add(mazeName);
+					this.mazeSolMap.put(mazeName, solutionMap.get(maze));
+				}
+			}
+		}
 		
 	}
 
 	@Override
-	public void showSolution(Solution<Position> solution) {
-		// TODO Auto-generated method stub
-		
+	public void showSolution(String name,Solution<Position> solution) {
+
+		System.out.println("TODO: Timer task and timer here");
 	}
 
 	@Override
@@ -580,6 +703,7 @@ public class MyGuiView extends CommonGuiView{
 			builder.append(itr.next()+" ");
 		}
 		mazeList.setItems(builder.toString().split(" "));
+	//	solutionList.setItems(builder.toString().split(" "));
 	}
 
 }

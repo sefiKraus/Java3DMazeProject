@@ -203,10 +203,11 @@ public class MyView extends CommonView implements Observer,View {
  * @param solution: solution recived from the model 
  */
 	@Override
-	public void showSolution(Solution<Position> solution) {
+	public void showSolution(String mazeName,Solution<Position> solution) {
 		if(solution!=null)
 		{
 			ArrayList<Position>pointList=solution.getSolution();
+			System.out.println("Maze name: "+mazeName);
 			for (Position position : pointList) {
 				System.out.print("("+position.toString()+") ");
 			}
@@ -254,20 +255,27 @@ public class MyView extends CommonView implements Observer,View {
 
 
 	@Override
-	public void showSolutionList(HashMap<Maze3d, Solution<Position>> map) {
-		if(!map.isEmpty())
+	public void showSolutionList(HashMap<String, Maze3d>mazeMap, HashMap<Maze3d, Solution<Position>> solutionMap) {
+		if(!solutionMap.isEmpty())
 		{
-			Iterator<Maze3d> itr=map.keySet().iterator();
+			Iterator<Maze3d> itr=solutionMap.keySet().iterator();
 			while(itr.hasNext())
 			{
 				Maze3d maze=itr.next();
+				
 				try {
 					this.showGeneratedMaze(maze.toByteArray());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				this.showSolution(map.get(maze));
+				for (String name : mazeMap.keySet()) {
+					if(maze.equals(mazeMap.get(name)))
+					{
+						this.showSolution(name,solutionMap.get(maze));
+					}
+				}
+			
 			}
 		}
 	}

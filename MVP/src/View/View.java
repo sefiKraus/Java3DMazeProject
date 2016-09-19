@@ -22,8 +22,8 @@ public interface View {
 	public void showGeneratedMazeName(String name);
 	public void showExit();
 	public void showCrossSection(byte[] byteMaze,String axies,int index,String name);
-	public void showSolutionList(HashMap<Maze3d,Solution<Position>>map);
-	public void showSolution(Solution<Position>solution);
+	public void showSolutionList(HashMap<String, Maze3d>mazeMap,HashMap<Maze3d,Solution<Position>>solutionMap);
+	public void showSolution(String mazeName,Solution<Position>solution);
 	public void showMazeList(Set<String> set);
 	
 }

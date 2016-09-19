@@ -111,14 +111,14 @@ public class Presenter implements Observer{
 
 			@Override
 			public void doCommand(String[] args) {
-			ui.showSolution(m.getSolutionMap().get(m.getMazeMap().get(args[2])));
+			ui.showSolution(args[2],m.getSolutionMap().get(m.getMazeMap().get(args[2])));
 			}
 		});
 		commandMap.put("display solution list", new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
-				ui.showSolutionList(m.getSolutionMap());
+				ui.showSolutionList(m.getMazeMap(),m.getSolutionMap());
 			}
 		});
 		commandMap.put("exit", new Command() {
@@ -223,7 +223,7 @@ public class Presenter implements Observer{
 			break;
 			case("Solved already"):
 			{
-				ui.showSolution((m.getSolutionMap().get(m.getMazeMap().get(m.getDataFromModel(data)))));
+				ui.showSolution((String)m.getDataFromModel(data),(m.getSolutionMap().get(m.getMazeMap().get(m.getDataFromModel(data)))));
 			}
 			break;
 			default:
@@ -275,6 +275,18 @@ public class Presenter implements Observer{
 				this.activateCommand((String)ui.getDataFromView("LoadMaze"));
 			}
 			break;
+			case("Solve"):
+			{
+				this.activateCommand((String)ui.getDataFromView("Solve"));
+			}
+			break;
+			case("SolutionListRequest"):
+			{
+				this.activateCommand((String)ui.getDataFromView("SolutionListRequest"));
+				
+			}
+			break;
+			
 			default:
 				break;
 			}
