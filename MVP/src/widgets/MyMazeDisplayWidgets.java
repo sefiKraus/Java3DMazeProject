@@ -4,6 +4,9 @@ package widgets;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Composite;
 
@@ -17,16 +20,20 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	private int[][] mazeData;
 	private Maze3d maze;
 	int currentLevel;
+	private Image floorImage;
+	private Image cellImage;
 	
 	public MyMazeDisplayWidgets(Composite composite, int style,Maze3d maze) {
 		super(composite, style);
 		this.maze=maze;
 		maze.setPlayerPosition(new Position(maze.getStartPosition().getY(),maze.getStartPosition().getX(),maze.getStartPosition().getZ()));
-		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ez.jpg");
-		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.jpg");
+		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
+		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.png");
 		this.setMazeData(maze.getCrossSectionByY(player.getPlayerPosition().getY()));
 		System.out.println(player.getPlayerPosition().toString());
 		this.currentLevel=player.getPlayerPosition().getY();
+		this.floorImage=new Image(null, "res/images/path.png");
+		this.cellImage=new Image(null, "res/images/grass.png");
 		this.addPaintListener(new PaintListener() {
 			
 			@Override
@@ -35,12 +42,14 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 				e.gc.setForeground(new Color(null, 0,0,0));
 				int width=getSize().x;
 				int height=getSize().y;
-
+				Transform transform=new Transform(getDisplay());
 				int r=Math.min(width, height);
 
 				int w=r/mazeData[0].length;
 				int h=r/mazeData.length;
-				
+				 
+					transform.translate(50+w, 50+h);
+					transform.rotate(-45);
 				for(int i=0;i<mazeData.length;i++)
 				{
 					for(int j=0;j<mazeData[i].length;j++)
@@ -50,7 +59,16 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 						
 						if(mazeData[i][j]!=0)
 						{
-							e.gc.fillRectangle(y, x, w, h);
+							//e.gc.fillRectangle(y, x, w, h);
+							
+							e.gc.drawImage(cellImage, 0, 0,cellImage.getBounds().width,cellImage.getBounds().height,
+									y,x,w,h);
+
+						}
+						else
+						{
+							e.gc.drawImage(floorImage,0,0,floorImage.getBounds().width,floorImage.getBounds().height
+									,y,x,w,h);
 						}
 					}
 				}

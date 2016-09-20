@@ -1,7 +1,6 @@
 package View;
 
 
-import java.awt.SecondaryLoop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,14 +23,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.junit.internal.builders.SuiteMethodBuilder;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-import algorithms.search.State;
 import widgets.MazeDisplay;
 import widgets.MyMazeDisplayWidgets;
 
@@ -39,11 +37,11 @@ public class MyGuiView extends CommonGuiView{
 
 	HashMap<String, Object>notifications;
 	Button generateBtn,submitMazeData,displayBtn,
-			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,exitBtn,saveSubmit
+			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,saveSubmit
 			,solveBtn,submitSolveMaze,displaySolutionBtn,submitSolution;
 	
-	Text  mazeNameText,yAxisText,xAxisText,zAxisText,mazeName,dirPathText, messageText;
-	
+	Text  mazeNameText,yAxisText,xAxisText,zAxisText,mazeName,dirPathText;
+	MessageBox messageBox;
 	Label mazeLabel,yAxisLabel,xAxisLabel, zAxisLabel,mazeNameLabel
 			,dirPathLabel,solveMazeLabel,solveWithAlgo,displaySolutionFor;
 	
@@ -81,6 +79,7 @@ public class MyGuiView extends CommonGuiView{
 				notifications.put("Exit", " ");
 				setChanged();
 				notifyObservers("Exit");
+				shell.dispose();
 			}
 		});
 		/*--------------------[This is Generate Button]--------------------*/
@@ -94,7 +93,7 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[This is another composite in main window]--------------------*/
 		 dataDisplayer=new Composite(shell, SWT.BORDER);
 		dataDisplayer.setLayout(generateStackLayout);
-		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,9));
+		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,7));
 		
 		
 		/*--------------------[Maze Properties form after pressing Generate 3D maze btn]--------------------*/
@@ -285,18 +284,13 @@ public class MyGuiView extends CommonGuiView{
 		submitDirRequiered.pack();
 		
 		
-		/*--------------------[Exit Button]--------------------*/
-
-		exitBtn=new Button(shell, SWT.PUSH);
-		exitBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-		exitBtn.setText("Exit");
+	
 		
 		
 		/*--------------------[Message Box]--------------------*/
-		messageText=new Text(shell, SWT.BORDER|SWT.MULTI|SWT.READ_ONLY);
-		messageText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
+	//	messageBox.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		
-	
 		
 		
 		
@@ -444,6 +438,12 @@ public class MyGuiView extends CommonGuiView{
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				String mazeName=solveMazeList.getSelection()[0];
+				if(mazeSolMap.isEmpty())
+				{
+					notifications.put("SolutionListRequest", "display solution list");
+					setChanged();
+					notifyObservers("SolutionListRequest");
+				}
 				showSolution(mazeName,mazeSolMap.get(mazeName));
 				
 			}
@@ -557,22 +557,7 @@ public class MyGuiView extends CommonGuiView{
 				
 			}
 		});
-		exitBtn.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				notifications.put("Exit", " ");
-				setChanged();
-				notifyObservers("Exit");
-				shell.dispose();
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		
 	}
 	
 	@Override
@@ -588,7 +573,9 @@ public class MyGuiView extends CommonGuiView{
 
 	@Override
 	public void showMessage(String message) {
-		this.messageText.setText(message);
+		this.messageBox.setText("New Message Received");
+		messageBox.setMessage(message);
+		messageBox.open();
 	}
 
 	@Override
