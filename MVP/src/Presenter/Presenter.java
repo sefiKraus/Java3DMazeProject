@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import Model.Model;
 import View.View;
+import algorithms.mazeGenerators.Position;
 /**
  * @author Krausz Sefi 305371320
  * @since 02/09/2016
@@ -286,7 +287,21 @@ public class Presenter implements Observer{
 				
 			}
 			break;
-			
+			case("SolveRequest"):
+			{
+				String string=(String)ui.getDataFromView("SolveRequest");
+				String[] args=string.split(" ");
+
+				m.handleChangeMazeStartPosition(args[0],new Position(args[1]));
+				this.activateCommand("solve "+args[0]+" bfs");
+			}
+			break;
+			case("Exit"):
+			{
+				this.activateCommand("save solution map");
+				m.handleExit();
+			}
+			break;
 			default:
 				break;
 			}

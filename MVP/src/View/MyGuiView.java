@@ -1,6 +1,7 @@
 package View;
 
 
+import java.awt.SecondaryLoop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +11,8 @@ import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,6 +31,7 @@ import org.junit.internal.builders.SuiteMethodBuilder;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
+import algorithms.search.State;
 import widgets.MazeDisplay;
 import widgets.MyMazeDisplayWidgets;
 
@@ -70,6 +74,15 @@ public class MyGuiView extends CommonGuiView{
 		
 		this.initLisenerts();
 		shell.setLayout(new GridLayout(2,false));
+		shell.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent arg0) {
+				notifications.put("Exit", " ");
+				setChanged();
+				notifyObservers("Exit");
+			}
+		});
 		/*--------------------[This is Generate Button]--------------------*/
 		 generateBtn=new Button(shell, SWT.PUSH);
 		
@@ -210,7 +223,7 @@ public class MyGuiView extends CommonGuiView{
 				displaySolutionFor.pack();
 				
 				solutionList=new List(displaySolutionForm, SWT.READ_ONLY|SWT.DROP_DOWN);
-				solutionList.setLayoutData(new GridData(SWT.NONE,SWT.NONE,true,false,1,1));
+				solutionList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 				solutionList.pack();
 				
 				submitSolution=new Button(displaySolutionForm, SWT.PUSH);
@@ -233,7 +246,7 @@ public class MyGuiView extends CommonGuiView{
 		saveForm.setLayout(new GridLayout(1,false));
 		
 		mazeList=new List(saveForm, SWT.SINGLE|SWT.BORDER);
-		mazeList.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+		mazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		mazeList.pack();
 		
 		saveSubmit=new Button(saveForm, SWT.PUSH);
@@ -271,15 +284,22 @@ public class MyGuiView extends CommonGuiView{
 		submitDirRequiered.setText("Submit Your Dir Path");
 		submitDirRequiered.pack();
 		
+		
+		/*--------------------[Exit Button]--------------------*/
+
 		exitBtn=new Button(shell, SWT.PUSH);
 		exitBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 		exitBtn.setText("Exit");
 		
-		//
-		messageText=new Text(shell, SWT.BORDER|SWT.MULTI);
-		messageText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+		
+		/*--------------------[Message Box]--------------------*/
+		messageText=new Text(shell, SWT.BORDER|SWT.MULTI|SWT.READ_ONLY);
+		messageText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		
 	
+		
+		
+		
 		
 		
 		/*********************Listeners handle*********************/
@@ -386,7 +406,6 @@ public class MyGuiView extends CommonGuiView{
 				{
 					String mazeName=solveMazeList.getSelection()[0];
 					String algoName=algoList.getSelection()[0];
-					
 					notifications.put("Solve", "solve "+mazeName+" "+algoName);
 					setChanged();
 					notifyObservers("Solve");
@@ -424,7 +443,7 @@ public class MyGuiView extends CommonGuiView{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				String mazeName=submitSolution.getText().toString();
+				String mazeName=solveMazeList.getSelection()[0];
 				showSolution(mazeName,mazeSolMap.get(mazeName));
 				
 			}
@@ -538,7 +557,22 @@ public class MyGuiView extends CommonGuiView{
 				
 			}
 		});
-
+		exitBtn.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				notifications.put("Exit", " ");
+				setChanged();
+				notifyObservers("Exit");
+				shell.dispose();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	@Override
@@ -563,16 +597,46 @@ public class MyGuiView extends CommonGuiView{
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
 			mazeShell.setLayout(new GridLayout(2,false));
-			//mazeShell.setSize(400,400);
+			mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
 			 maze=new Maze3d(byteMaze);
 			 maze.printMaze();
+			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
+			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+			 helpSolveBtn.setText("Press here to solve the maze");
+		
+			 
 			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.NONE,maze);
-			//this.mazeDisplayer=new MazeDisplay(mazeShell, SWT.NONE,new Maze3d(byteMaze));
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,2));
 			this.mazeDisplayer.addKeyListener(keyListener);
-			this.mazeShell.setText("Maze Game");
-			this.mazeShell.open();
+			String name=mazeName.getText();
+			this.mazeShell.setText(name);
 			
+			
+			
+			this.mazeShell.open();
+				mazeDisplayer.setFocus();
+			helpSolveBtn.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					String name=mazeShell.getText();
+					Position tempPosition=mazeDisplayer.getPlayer().getPlayerPosition();
+					notifications.put("SolveRequest", name+" "+tempPosition.toString());
+					setChanged();
+					notifyObservers("SolveRequest");
+					notifications.put("SolutionListRequest","display solution list");
+					setChanged();
+					notifyObservers("SolutionListRequest");
+					showSolution(name, mazeSolMap.get(name));
+					
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -588,29 +652,25 @@ public class MyGuiView extends CommonGuiView{
 				switch (e.keyCode) {
 				case SWT.ARROW_UP:
 				{
-					mazeDisplayer.moveLeft();
-					System.out.println("arrow up");
+					mazeDisplayer.moveOut();
 				}
 					break;
 				case SWT.ARROW_DOWN:
 				{
-					mazeDisplayer.moveRight();
-					System.out.println("arrow down");
+					mazeDisplayer.moveIn();
 
 				}
 				break;
 				case SWT.ARROW_RIGHT:
 				{
-					mazeDisplayer.moveIn();
-					System.out.println("arrow right");
+					mazeDisplayer.moveRight();
 
 					
 				}
 				break;
 				case SWT.ARROW_LEFT:
 				{
-					mazeDisplayer.moveOut();
-					System.out.println("arrow left");
+					mazeDisplayer.moveLeft();
 
 
 				}
@@ -618,14 +678,12 @@ public class MyGuiView extends CommonGuiView{
 				case SWT.PAGE_UP:
 				{
 					mazeDisplayer.moveUp();
-					System.out.println("arrow pageup");
 
 				}
 				break;
 				case SWT.PAGE_DOWN:
 				{
 					mazeDisplayer.moveDown();
-					System.out.println("arrow pagedown");
 
 				}
 				break;
@@ -636,7 +694,6 @@ public class MyGuiView extends CommonGuiView{
 			
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 		};
@@ -658,7 +715,6 @@ public class MyGuiView extends CommonGuiView{
 
 	@Override
 	public void showExit() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -689,8 +745,44 @@ public class MyGuiView extends CommonGuiView{
 
 	@Override
 	public void showSolution(String name,Solution<Position> solution) {
-
-		System.out.println("TODO: Timer task and timer here");
+		timer=new Timer();
+		ArrayList<Position> stateList=solution.getSolution();
+		Iterator<Position>itr=stateList.iterator();
+		display.syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				mazeDisplayer.setFocus();
+				timer.scheduleAtFixedRate(new TimerTask() {
+					
+					@Override
+					public void run() {
+						if(itr.hasNext() && !mazeDisplayer.isDisposed())
+						{
+							display.syncExec(new Runnable() {
+								
+								@Override
+								public void run() {
+									Position pos=itr.next();
+									mazeDisplayer.movePlayerTo(pos.getY(), pos.getX(), pos.getZ());
+								}
+							});
+						}
+						else
+						{
+							if(myTimerTask!=null)
+							{
+								myTimerTask.cancel();
+							}
+							if(timer!=null)
+							{
+								timer.cancel();
+							}
+						}
+					}
+				}, 0, 150);
+			}
+		});
 	}
 
 	@Override
@@ -703,7 +795,6 @@ public class MyGuiView extends CommonGuiView{
 			builder.append(itr.next()+" ");
 		}
 		mazeList.setItems(builder.toString().split(" "));
-	//	solutionList.setItems(builder.toString().split(" "));
 	}
 
 }

@@ -363,7 +363,15 @@ public class MyModel extends CommonModel {
 
 	}
 
-
+	@Override
+	public void handleChangeMazeStartPosition(String mazeName,Position position)
+	{
+		Maze3d tempMaze=this.mazeMap.get(mazeName);
+		tempMaze.getStartPosition().setY(position.getY());
+		tempMaze.getStartPosition().setX(position.getX());
+		tempMaze.getStartPosition().setZ(position.getZ());
+		
+	}
 
 
 	

@@ -16,7 +16,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	private GameCharacter goal;
 	private int[][] mazeData;
 	private Maze3d maze;
-	
+	int currentLevel;
 	
 	public MyMazeDisplayWidgets(Composite composite, int style,Maze3d maze) {
 		super(composite, style);
@@ -26,9 +26,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.jpg");
 		this.setMazeData(maze.getCrossSectionByY(player.getPlayerPosition().getY()));
 		System.out.println(player.getPlayerPosition().toString());
-			Transform tr=new Transform(composite.getDisplay());
-		tr.rotate(+90);
-		
+		this.currentLevel=player.getPlayerPosition().getY();
 		this.addPaintListener(new PaintListener() {
 			
 			@Override
@@ -52,12 +50,16 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 						
 						if(mazeData[i][j]!=0)
 						{
-							e.gc.fillRectangle(x, y, w, h);
+							e.gc.fillRectangle(y, x, w, h);
 						}
 					}
 				}
 				player.draw(w, h, e.gc);
-				//goal.draw(w, h, e.gc);
+				if(currentLevel==goal.getY())
+				{
+					goal.draw(w, h, e.gc);
+							
+				}
 			
 
 			}
@@ -80,14 +82,12 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 
 	@Override
 	public void moveDown() {
-		//player.moveDown();
 		this.movePlayerTo(player.getY()-1,player.getX(),player.getZ());
 
 	}
 
 	@Override
 	public void moveRight() {
-		//player.moveRight();
 		this.movePlayerTo(player.getY(),player.getX()+1,player.getZ());
 
 	}
@@ -95,35 +95,31 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	@Override
 	public void moveLeft() {
 		
-		//player.moveLeft();
 		this.movePlayerTo(player.getY(),player.getX()-1,player.getZ());
 
 	}
 
 	@Override
 	public void moveIn() {
-		//player.moveIn();
 		this.movePlayerTo(player.getY(),player.getX(),player.getZ()+1);
 
 	}
 
 	@Override
 	public void moveOut() {
-		//player.moveOut();
 		this.movePlayerTo(player.getY(),player.getX(),player.getZ()-1);
 
 	}
-
+	@Override
 	public void movePlayer(int y,int x,int z)
 	{
 			if(!player.getPlayerPosition().equals(goal.getPlayerPosition()))
 			{
-				System.out.println(player.getPlayerPosition().toString());
 				player.setY(y);
 				player.setX(x);
 				player.setZ(z);
-				System.out.println(player.getPlayerPosition().toString());
 				this.setMazeData(maze.getCrossSectionByY(player.getPlayerPosition().getY()));
+				currentLevel=player.getY();
 				
 			}
 			
@@ -132,7 +128,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 				displayVictoryScreen();
 			}
 	}
-	
+	@Override
 	public void movePlayerTo(int y,int x,int z)
 	{
 		if(maze.getPositionValueByIndex(y, x, z)==0 && !this.isDisposed())
@@ -146,4 +142,16 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	{
 		
 	}
+
+	@Override
+	public GameCharacter getPlayer() {
+		return player;
+	}
+
+	@Override
+	public Maze3d getMaze() {
+		return maze;
+	}
+	
+	
 }
