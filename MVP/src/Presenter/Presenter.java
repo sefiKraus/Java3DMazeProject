@@ -340,6 +340,7 @@ public class Presenter implements Observer{
 	public void activateCommand(String command)
 	{
 		for (String s : this.commandMap.keySet()) {
+			
 			if(command.matches(s))
 			{
 				String[] arguments=command.split(" ");

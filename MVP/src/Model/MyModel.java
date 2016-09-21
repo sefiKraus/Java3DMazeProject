@@ -317,7 +317,7 @@ public class MyModel extends CommonModel {
 			objOut.flush();
 			objOut.close();
 			fileOut.close();
-			this.noteObservers("Save","Solution map is saved in solutions.zip");
+			this.noteObservers("Save",null);
 		} catch (Exception  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
