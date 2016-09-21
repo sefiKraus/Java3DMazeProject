@@ -25,5 +25,6 @@ public interface View {
 	public void showSolutionList(HashMap<String, Maze3d>mazeMap,HashMap<Maze3d,Solution<Position>>solutionMap);
 	public void showSolution(String mazeName,Solution<Position>solution);
 	public void showMazeList(Set<String> set);
+	public void showAutoSolution(String mazeName,Maze3d maze);
 	
 }

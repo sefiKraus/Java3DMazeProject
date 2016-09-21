@@ -124,7 +124,7 @@ public class MyModel extends CommonModel {
 			MyCompressorOutputStream compressor=new MyCompressorOutputStream(new FileOutputStream(path));
 			compressor.write(byteMaze);
 			compressor.close();
-			noteObservers("Save","Maze successfully saved in: "+path+ "size: "+byteMaze.length);
+			noteObservers("Save","Maze successfully saved in: "+path);
 		} catch ( IOException e) {
 			this.noteObservers("Error", "Encountered problem during saving proccess");
 			e.printStackTrace();

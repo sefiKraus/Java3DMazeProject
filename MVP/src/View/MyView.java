@@ -286,6 +286,12 @@ public class MyView extends CommonView implements Observer,View {
 		
 	}
 
+	@Override
+	public void showAutoSolution(String mazeName, Maze3d maze) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 

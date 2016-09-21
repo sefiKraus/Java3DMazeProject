@@ -30,7 +30,6 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
 		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.png");
 		this.setMazeData(maze.getCrossSectionByY(player.getPlayerPosition().getY()));
-		System.out.println(player.getPlayerPosition().toString());
 		this.currentLevel=player.getPlayerPosition().getY();
 		this.floorImage=new Image(null, "res/images/path.png");
 		this.cellImage=new Image(null, "res/images/grass.png");
@@ -59,7 +58,6 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 						
 						if(mazeData[i][j]!=0)
 						{
-							//e.gc.fillRectangle(y, x, w, h);
 							
 							e.gc.drawImage(cellImage, 0, 0,cellImage.getBounds().width,cellImage.getBounds().height,
 									y,x,w,h);

@@ -289,6 +289,7 @@ public class MyGuiView extends CommonGuiView{
 		
 		/*--------------------[Message Box]--------------------*/
 		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
+		
 	//	messageBox.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		
 		
@@ -322,7 +323,6 @@ public class MyGuiView extends CommonGuiView{
 			public void widgetSelected(SelectionEvent e) {
 				
 				String mazeData="generate 3d maze "+mazeNameText.getText()+" "+yAxisText.getText()+" "+xAxisText.getText()+" "+zAxisText.getText();
-				System.out.println(mazeData);
 				notifications.put("GenerateMaze", mazeData);
 				setChanged();
 				notifyObservers("GenerateMaze");
@@ -379,8 +379,16 @@ public class MyGuiView extends CommonGuiView{
 				setChanged();
 				notifyObservers("MazeList");
 				generateStackLayout.topControl=solveForm;
-				dataDisplayer.layout();
-				solveMazeList.setItems(mazeList.getItems());
+				dataDisplayer.layout();	
+				StringBuilder builder=new StringBuilder();
+				for (String listElement : mazeList.getItems()) {
+					if(!mazeSolMap.containsKey(listElement))
+					{
+						builder.append(listElement+" ");
+					}
+				}
+				String[] list=builder.toString().split(" ");
+				solveMazeList.setItems(list);
 				String[] algorithms={"BFS","DFS"};
 				algoList.setItems(algorithms);
 				
@@ -403,6 +411,8 @@ public class MyGuiView extends CommonGuiView{
 					notifications.put("Solve", "solve "+mazeName+" "+algoName);
 					setChanged();
 					notifyObservers("Solve");
+					solveMazeList.remove(mazeName);
+					
 				}
 			}
 			
@@ -437,15 +447,19 @@ public class MyGuiView extends CommonGuiView{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				String mazeName=solveMazeList.getSelection()[0];
-				if(mazeSolMap.isEmpty())
-				{
-					notifications.put("SolutionListRequest", "display solution list");
-					setChanged();
-					notifyObservers("SolutionListRequest");
-				}
-				showSolution(mazeName,mazeSolMap.get(mazeName));
 				
+				String mazeName=solutionList.getSelection()[0];
+
+					if(mazeSolMap.containsKey(mazeName))
+					{
+	
+						notifications.put("AutoSolution",mazeName);
+						setChanged();
+						notifyObservers("AutoSolution");
+						
+				}
+
+					
 			}
 			
 			@Override
@@ -497,6 +511,7 @@ public class MyGuiView extends CommonGuiView{
 				        	notifications.put("SaveMaze","save maze "+item+" "+selected);
 				        	setChanged();
 				        	notifyObservers("SaveMaze");
+				        	
 				        }
 				}
 
@@ -576,6 +591,7 @@ public class MyGuiView extends CommonGuiView{
 		this.messageBox.setText("New Message Received");
 		messageBox.setMessage(message);
 		messageBox.open();
+		
 	}
 
 	@Override
@@ -586,7 +602,6 @@ public class MyGuiView extends CommonGuiView{
 			mazeShell.setLayout(new GridLayout(2,false));
 			mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
 			 maze=new Maze3d(byteMaze);
-			 maze.printMaze();
 			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
 			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 			 helpSolveBtn.setText("Press here to solve the maze");
@@ -615,6 +630,7 @@ public class MyGuiView extends CommonGuiView{
 					setChanged();
 					notifyObservers("SolutionListRequest");
 					showSolution(name, mazeSolMap.get(name));
+					helpSolveBtn.setVisible(false);
 					
 				}
 				
@@ -714,20 +730,30 @@ public class MyGuiView extends CommonGuiView{
 	@Override
 	public void showSolutionList(HashMap<String, Maze3d>mazeMap,  HashMap<Maze3d, Solution<Position>> solutionMap) {
 			
-		Iterator<Maze3d> itr=solutionMap.keySet().iterator();
-		
-		while(itr.hasNext())
+		Iterator<Maze3d>mazeItr=solutionMap.keySet().iterator();
+		Iterator<String>mazeMapStringItr=mazeMap.keySet().iterator();
+		solutionList.removeAll();
+		while(mazeItr.hasNext())
 		{
-			Maze3d maze=itr.next();
-			for (String mazeName : mazeMap.keySet()) {
-				if(maze.equals(mazeMap.get(mazeName)))
+			Maze3d maze=mazeItr.next();
+			while(mazeMapStringItr.hasNext())
+			{
+				String name=mazeMapStringItr.next();
+				if(maze.equals(mazeMap.get(name))&& !mazeSolMap.containsKey(name))
 				{
-					solutionList.add(mazeName);
-					this.mazeSolMap.put(mazeName, solutionMap.get(maze));
+					mazeSolMap.put(name, solutionMap.get(maze));
 				}
 			}
+			
 		}
-		
+		Iterator<String>mazeSolMapStringItr=mazeSolMap.keySet().iterator();
+		StringBuilder builder=new StringBuilder();
+		while(mazeSolMapStringItr.hasNext())
+		{
+			builder.append(mazeSolMapStringItr.next());
+		}
+		solutionList.setItems(builder.toString().split(" "));
+
 	}
 
 	@Override
@@ -781,7 +807,23 @@ public class MyGuiView extends CommonGuiView{
 		{
 			builder.append(itr.next()+" ");
 		}
+		mazeList.removeAll();
 		mazeList.setItems(builder.toString().split(" "));
+	}
+
+	@Override
+	public void showAutoSolution(String mazeName, Maze3d maze) {
+		mazeShell=new Shell(shell, SWT.SHELL_TRIM);
+		mazeShell.setLayout(new GridLayout(1,false));
+		mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
+		mazeShell.setText(mazeName);
+		
+		mazeDisplayer=new MyMazeDisplayWidgets(mazeShell, SWT.NONE, maze);
+		mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+		mazeShell.open();
+		this.showSolution(mazeName, mazeSolMap.get(mazeName));
+
+		
 	}
 
 }

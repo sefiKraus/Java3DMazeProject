@@ -151,7 +151,13 @@ public class Presenter implements Observer{
 				
 			}
 		});
+		commandMap.put("get maze list", new Command() {
 
+			@Override
+			public void doCommand(String[] args) {
+				ui.showMazeList(m.getMazeMap().keySet());
+			}
+		});
 		commandMap.put("help",new Command() {
 
 			@Override
@@ -173,13 +179,7 @@ public class Presenter implements Observer{
 
 			}
 		});
-		commandMap.put("get maze list", new Command() {
-
-			@Override
-			public void doCommand(String[] args) {
-				ui.showMazeList(m.getMazeMap().keySet());
-			}
-		});
+	
 	}
 
 	@Override
@@ -300,6 +300,11 @@ public class Presenter implements Observer{
 			{
 				this.activateCommand("save solution map");
 				m.handleExit();
+			}
+			break;
+			case("AutoSolution"):
+			{
+				ui.showAutoSolution((String)ui.getDataFromView("AutoSolution"),m.getMazeMap().get((String)ui.getDataFromView("AutoSolution")));
 			}
 			break;
 			default:
