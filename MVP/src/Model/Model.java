@@ -25,7 +25,7 @@ public interface Model {
 	public void saveSolutionHashMapToZip();
 	public void loadSolutionHashMapFromZip();
 	public void handleChangeMazeStartPosition(String mazeName,Position position);
-
+	public void handleLoadProperties(String xmlPath);
 	
 	
 	

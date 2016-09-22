@@ -19,13 +19,13 @@ public class Properties implements Serializable{
 	private int amountOfThreads;
 
 	public Properties() {
-		this.Ip="127.0.0.1";
+/*		this.Ip="127.0.0.1";
 		this.Port="3600";
 		this.sound=false;
 		this.windowHeightSize=400;
 		this.windowWidthSize=400;
 		this.amountOfThreads=1;
-		this.GUI=false;
+		this.GUI=false;*/
 	}
 	public Properties(String ip, String port, boolean sound, boolean gUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {
@@ -90,5 +90,13 @@ public class Properties implements Serializable{
 		System.out.println("Thread number: "+this.getAmountOfThreads());
 		System.out.println("Height: "+this.getWindowHeightSize()+" width: "+this.getWindowWidthSize());
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder= new StringBuilder();
+		builder.append("IP "+this.Ip+"\nPort "+this.Port+"\nSound "+this.isSound()+"\nGui "+this.isGUI()+ "\nWidth "+this.windowWidthSize.toString()+
+				"\nHeight "+this.windowHeightSize.toString()+"\nThreads "+this.amountOfThreads);
+		return builder.toString();
+	}
+
 	
 }

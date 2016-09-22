@@ -1,12 +1,16 @@
 package View;
 
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.swing.text.AbstractDocument.Content;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -31,6 +35,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import Model.PropertiesXmlHandler;
+import Presenter.Properties;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
@@ -41,15 +47,19 @@ public class MyGuiView extends CommonGuiView{
 
 	HashMap<String, Object>notifications;
 	Button generateBtn,submitMazeData,displayBtn,
-			submitMazeRequiered,saveBtn,loadBtn,dirBtn,submitDirRequiered,saveSubmit
+			submitMazeRequiered,saveSubmit
 			,solveBtn,submitSolveMaze,displaySolutionBtn,submitSolution;
 	
 	Text  mazeNameText,yAxisText,xAxisText,zAxisText,mazeName,dirPathText;
+	
 	MessageBox messageBox;
+	
+	
 	Label mazeLabel,yAxisLabel,xAxisLabel, zAxisLabel,mazeNameLabel
 			,dirPathLabel,solveMazeLabel,solveWithAlgo,displaySolutionFor;
 	
-	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm,solveForm,displaySolutionForm;
+	Composite dataDisplayer,mazeForm,displayMazeForm,dirForm,saveForm,
+				solveForm,displaySolutionForm;
 	
 	MazeDisplay mazeDisplayer;
 	private MouseWheelListener mouseWheelListener;
@@ -67,9 +77,11 @@ public class MyGuiView extends CommonGuiView{
 	
 	TimerTask myTimerTask;
 	
-	Menu menuBar,fileBar,settingsBar,aboutBar;
-	MenuItem settingsMenuHeader, aboutMenuHeader;
-	MenuItem settingsItem, aboutItem;
+	Menu menuBar,fileMenu,aboutMenu,propertiesMenu;
+	MenuItem fileMenuHeader,aboutMenuHeader,propertiesMenuHeader;
+	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem,savePropertiesItem,loadPropertiesItem;
+	
+	
 	public MyGuiView(String windowTitle, int width, int height) {
 		super(windowTitle, width, height);
 		this.notifications=new HashMap<String,Object>();
@@ -96,13 +108,81 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[This is Menu Bar]--------------------*/
 		menuBar=new Menu(shell,SWT.BAR);
 		
-		settingsMenuHeader=new MenuItem(menuBar, SWT.CASCADE); //setplace for header
-		settingsMenuHeader.setText("&Settings");
+		/*--[File Header and items]--*/
+		fileMenuHeader=new MenuItem(menuBar, SWT.CASCADE);
+		fileMenuHeader.setText("&File");
 		
-		settingsBar=new Menu(shell,SWT.DROP_DOWN); //
-		settingsMenuHeader.setMenu(settingsBar);
+		fileMenu=new Menu(shell,SWT.DROP_DOWN);
+		fileMenuHeader.setMenu(fileMenu);
 		
+		saveFileItem=new MenuItem(fileMenu, SWT.PUSH);
+		saveFileItem.setText("&Save Maze");
+		
+		loadFileItem=new MenuItem(fileMenu, SWT.PUSH);
+		loadFileItem.setText("&Load Maze");
+		
+		exitFromGame=new MenuItem(fileMenu, SWT.PUSH);
+		exitFromGame.setText("&Exit");
+		
+		exitFromGame.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				shell.dispose();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {				
+			}
+		});
+		
+		/*--[Properties Header and items]--*/
+		
+		propertiesMenuHeader=new MenuItem(menuBar, SWT.CASCADE);
+		propertiesMenuHeader.setText("&Properties");
+		
+		propertiesMenu=new Menu(shell,SWT.DROP_DOWN);
+		propertiesMenuHeader.setMenu(propertiesMenu);
+		
+		openPropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
+		openPropertiesItem.setText("My Properties");
+		
+		savePropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
+		savePropertiesItem.setText("&Save Properties");
+		
+		loadPropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
+		loadPropertiesItem.setText("&Load Properties");
+		
+		/*--[About Header and items]--*/
+
+		aboutMenuHeader=new MenuItem(menuBar, SWT.PUSH);
+		aboutMenuHeader.setText("&About");
+	
+		aboutMenuHeader.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				MessageBox info=new MessageBox(shell,SWT.ICON_INFORMATION|SWT.OK);
+				info.setText("About Information");
+				info.setMessage("First Name: Sefi\nLast Name: Krausz\nID: 305371320\nEmail: sefik1600@gmail.com");
+				info.open();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+			
 		shell.setMenuBar(menuBar);
+		
+		
+	
+		
+		final StackLayout StackLayout=new StackLayout();
 		
 		
 		/*--------------------[This is Generate Button]--------------------*/
@@ -111,15 +191,13 @@ public class MyGuiView extends CommonGuiView{
 		
 		generateBtn.setLayoutData(new GridData(SWT.None,SWT.NONE,false,false,1,1));
 		generateBtn.setText("Generate 3D Maze");
-		
-		final StackLayout generateStackLayout=new StackLayout();
 		/*--------------------[This is another composite in main window]--------------------*/
 		 dataDisplayer=new Composite(shell, SWT.BORDER);
-		dataDisplayer.setLayout(generateStackLayout);
-		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,7));
+		dataDisplayer.setLayout(StackLayout);
+		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,4));
 		
 		
-		/*--------------------[Maze Properties form after pressing Generate 3D maze btn]--------------------*/
+		/*--------------------[Maze Properties form after pressing Generate 3D maze button]--------------------*/
 			 mazeForm=new Composite(dataDisplayer,SWT.BORDER);
 			mazeForm.setLayout(new GridLayout(2,false));
 			
@@ -257,12 +335,7 @@ public class MyGuiView extends CommonGuiView{
 			/*************************************************************/
 
 
-		/*--------------------[Save Maze Button]--------------------*/
-		
-		
-		 saveBtn=new Button(shell, SWT.PUSH);
-		saveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-		saveBtn.setText("Save Maze");
+		/*--------------------[Save Maze Form]--------------------*/
 		
 		saveForm=new Composite(dataDisplayer, SWT.BORDER);
 		saveForm.setLayout(new GridLayout(1,false));
@@ -276,44 +349,10 @@ public class MyGuiView extends CommonGuiView{
 		saveSubmit.setText("Submit Your Required Maze");
 		saveSubmit.pack();
 		
-		/*--------------------[Load Maze Button]--------------------*/
-		 loadBtn=new Button(shell, SWT.PUSH);
-		loadBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-		loadBtn.setText("Load Maze");
-		
-		
-		
-		/*--------------------[Directory Content Button]--------------------*/
-
-		 dirBtn=new Button(shell, SWT.PUSH);
-		dirBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-		dirBtn.setText("Display Dir Files");
-		
-		 dirForm=new Composite(dataDisplayer, SWT.BORDER);
-		dirForm.setLayout(new GridLayout(2,false));
-		
-		dirPathLabel=new Label(dirForm, SWT.NONE);
-		dirPathLabel.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
-		dirPathLabel.setText("Enter Requiered Path:");
-		dirPathLabel.pack();
-		
-		dirPathText=new Text(dirForm, SWT.BORDER|SWT.SINGLE);
-		dirPathText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-		dirPathText.pack();
-		
-		submitDirRequiered=new Button(dirForm, SWT.PUSH);// submit button
-		submitDirRequiered.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
-		submitDirRequiered.setText("Submit Your Dir Path");
-		submitDirRequiered.pack();
-		
-		
-	
-		
 		
 		/*--------------------[Message Box]--------------------*/
 		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 		
-	//	messageBox.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		
 		
 		
@@ -321,14 +360,14 @@ public class MyGuiView extends CommonGuiView{
 		
 		
 		/*********************Listeners handle*********************/
-		
+
 		
 		generateBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				  generateStackLayout.topControl = mazeForm;
+				StackLayout.topControl = mazeForm;
 			        dataDisplayer.layout();
 			}
 			
@@ -367,7 +406,7 @@ public class MyGuiView extends CommonGuiView{
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 			
-				  generateStackLayout.topControl = displayMazeForm;
+				StackLayout.topControl = displayMazeForm;
 			        dataDisplayer.layout();				
 			}
 			
@@ -402,7 +441,7 @@ public class MyGuiView extends CommonGuiView{
 				notifications.put("MazeList", "get maze list");
 				setChanged();
 				notifyObservers("MazeList");
-				generateStackLayout.topControl=solveForm;
+				StackLayout.topControl=solveForm;
 				dataDisplayer.layout();	
 				StringBuilder builder=new StringBuilder();
 				for (String listElement : mazeList.getItems()) {
@@ -458,7 +497,7 @@ public class MyGuiView extends CommonGuiView{
 				notifications.put("SolutionListRequest","display solution list");
 				setChanged();
 				notifyObservers("SolutionListRequest");
-				generateStackLayout.topControl=displaySolutionForm;
+				StackLayout.topControl=displaySolutionForm;
 				dataDisplayer.layout();
 				StringBuilder builder=new StringBuilder();
 				for (String name : mazeSolMap.keySet()) {
@@ -503,15 +542,15 @@ public class MyGuiView extends CommonGuiView{
 			}
 		});
 		
-		
-		saveBtn.addSelectionListener(new SelectionListener() {
+		//saveBtn.addSelectionListener(new SelectionListener() {
+		saveFileItem.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				notifications.put("MazeList", "get maze list");
 				setChanged();
 				notifyObservers("MazeList");
-				generateStackLayout.topControl=saveForm;
+				StackLayout.topControl=saveForm;
 				
 				dataDisplayer.layout();
 				
@@ -559,8 +598,8 @@ public class MyGuiView extends CommonGuiView{
 			}
 		});
 		
-		
-		loadBtn.addSelectionListener(new SelectionListener() {
+		//loadBtn.addSelectionListener(new SelectionListener() {
+		loadFileItem.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -592,20 +631,7 @@ public class MyGuiView extends CommonGuiView{
 			}
 		});
 		
-		dirBtn.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				generateStackLayout.topControl=dirForm;
-				dataDisplayer.layout();
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+
 		
 	}
 	
@@ -644,7 +670,7 @@ public class MyGuiView extends CommonGuiView{
 		
 			 
 			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.NONE,maze);
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,2));
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeDisplayer.addMouseWheelListener(mouseWheelListener);
 			String name=mazeName.getText();

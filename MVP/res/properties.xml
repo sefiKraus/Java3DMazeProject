@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="1.8.0_101" class="java.beans.XMLDecoder">
  <object class="Presenter.Properties">
+  <void property="GUI">
+   <boolean>true</boolean>
+  </void>
   <void property="amountOfThreads">
    <int>3</int>
   </void>
   <void property="ip">
-   <string>127.0.0.2</string>
+   <string>127.0.0.1</string>
   </void>
   <void property="port">
    <string>2400</string>

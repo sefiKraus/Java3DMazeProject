@@ -41,14 +41,11 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 				e.gc.setForeground(new Color(null, 0,0,0));
 				int width=getSize().x;
 				int height=getSize().y;
-				Transform transform=new Transform(getDisplay());
 				int r=Math.min(width, height);
 
 				int w=r/mazeData[0].length;
 				int h=r/mazeData.length;
-				 
-					transform.translate(50+w, 50+h);
-					transform.rotate(-45);
+
 				for(int i=0;i<mazeData.length;i++)
 				{
 					for(int j=0;j<mazeData[i].length;j++)

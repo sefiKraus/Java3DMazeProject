@@ -7,6 +7,7 @@ package Model;
 
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,7 +26,6 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import Presenter.Properties;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
@@ -50,7 +50,6 @@ public class MyModel extends CommonModel {
 	private HashMap<String, Object> notifications;
 	private ExecutorService threadPool;
 	PropertiesXmlHandler xmlHandler;
-	Properties properties;
 
 	/**
 	 *HashMap<String,Maze3d>() mazeMap
@@ -62,14 +61,7 @@ public class MyModel extends CommonModel {
 		this.mazeMap=new HashMap<String,Maze3d>();
 		this.solutionMap=new HashMap<Maze3d,Solution<Position>>();
 		this.notifications=new HashMap<String,Object>();
-		try {
-			this.properties=PropertiesXmlHandler.getPropertiesInstance();
-			this.threadPool=Executors.newFixedThreadPool(this.properties.getAmountOfThreads());
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.threadPool=Executors.newFixedThreadPool(1);
 	}
 
 	/**
@@ -371,6 +363,33 @@ public class MyModel extends CommonModel {
 		tempMaze.getStartPosition().setX(position.getX());
 		tempMaze.getStartPosition().setZ(position.getZ());
 		
+	}
+
+	@Override
+	public void handleLoadProperties(String xmlPath) {
+		File file=new File(xmlPath);
+		//this.xmlHandler=new PropertiesXmlHandler();
+		
+		if(file.exists())
+		{
+			try {
+				PropertiesXmlHandler.readProperties(xmlPath);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		else
+		{
+			try {
+				PropertiesXmlHandler.readProperties("res/properties.xml");
+				this.noteObservers("Error", "Error loading xml properties from requiered path loading default form res/properties.xml");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 

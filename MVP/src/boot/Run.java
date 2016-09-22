@@ -1,5 +1,7 @@
 package boot;
 
+
+
 import java.io.FileNotFoundException;
 
 import Model.Model;
@@ -21,20 +23,18 @@ public class Run {
 		m.addObserver(p);
 		v.addObserver(p);
 		v.start();*/
-/*		Properties properties=new Properties("127.0.0.2", "2400", true, true, 200, 200, 3);
-		PropertiesXmlHandler handler=new PropertiesXmlHandler();
-		handler.writeProperties(properties, "res/properties.xml");
-		Properties p=handler.getPropertiesInstance();
+		//Properties properties=new Properties("127.0.0.1", "2400", true, true, 200, 200, 3);
+	//	PropertiesXmlHandler handler=new PropertiesXmlHandler();
+		//PropertiesXmlHandler.writeProperties(properties, "res/properties.xml");
+/*		Properties p=handler.getPropertiesInstance();
 		p.printProperties();
 		Properties temp=handler.readProperties("res/properties.xml");
 		temp.printProperties();*/
-
-		MyGuiView view=new MyGuiView("Test", 600, 600);
+		Presenter p=new Presenter();
 		MyModel model=new MyModel();
-		Presenter p=new Presenter(view, model);
-		view.addObserver(p);
+		p.setM(model);
 		model.addObserver(p);
-		view.start();
+		p.initViewFromPresenter("res/properties.xml");
 		
 	}
 

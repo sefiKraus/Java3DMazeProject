@@ -221,8 +221,11 @@ public class MyView extends CommonView implements Observer,View {
 	 */
 	@Override
 	public void showMessage(String message) {
+		if(message!=null){
+			
 		this.cli.getOut().println(message);
 		this.cli.getOut().flush();
+		}
 	}
 	@Override
 	public void showExit() {

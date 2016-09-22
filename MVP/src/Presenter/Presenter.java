@@ -1,11 +1,17 @@
 package Presenter;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 import Model.Model;
+import Model.PropertiesXmlHandler;
+import View.CommonView;
+import View.CommonGuiView;
+import View.MyGuiView;
+import View.MyView;
 import View.View;
 import algorithms.mazeGenerators.Position;
 /**
@@ -173,8 +179,8 @@ public class Presenter implements Observer{
 				ui.showMessage("display solution <maze's name>");
 				ui.showMessage("Type save solution map to save the solutions");
 				ui.showMessage("Type load solution map to load the solutions");
-				ui.showMessage("Type exit to close the game");
 				ui.showMessage("display solution list");
+				ui.showMessage("Type exit to close the game");
 				ui.showMessage("----------------------------------------------");
 
 			}
@@ -348,5 +354,73 @@ public class Presenter implements Observer{
 			}
 		}
 		
+	}
+	
+	public void initViewFromPresenter(String xmlPath)
+	{
+		m.handleLoadProperties(xmlPath);
+		
+		try {
+			PropertiesXmlHandler.getPropertiesInstance().printProperties();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		if(this.ui!=null)
+		{
+			
+			try {
+				if(!PropertiesXmlHandler.getPropertiesInstance().isGUI() && 
+						this.ui.getClass().getName().matches("[Mm][Yy][Gg][Uu][Ii][Vv][Ii][Ee][Ww]")){
+					
+					((CommonGuiView)this.ui).getDisplay().dispose();
+					this.switchToCLI();
+					
+				}
+				else if(PropertiesXmlHandler.getPropertiesInstance().isGUI() && 
+						this.ui.getClass().getName().matches("[Mm][Yy][Vv][Ii][Ee][Ww]"))
+				{
+					this.switchToGui();
+				}
+					
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				if(PropertiesXmlHandler.getPropertiesInstance().isGUI())
+				{
+					switchToGui();
+				}
+				else
+				{
+					switchToCLI();
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	public void switchToCLI()
+	{
+		this.setUi(new MyView());
+		((Observable)this.ui).addObserver(this);
+		((MyView)this.ui).getCli().addObserver((Observer)this.ui);
+		this.getUi().start();
+	}
+	
+	public void switchToGui()
+	{
+		this.setUi(new MyGuiView("Welcome Player",600,600));
+		((Observable)this.ui).addObserver(this);
+		this.getUi().start();
+
 	}
 }
