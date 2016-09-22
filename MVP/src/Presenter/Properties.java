@@ -27,16 +27,30 @@ public class Properties implements Serializable{
 		this.amountOfThreads=1;
 		this.GUI=false;*/
 	}
-	public Properties(String ip, String port, boolean sound, boolean gUI, Integer windowWidthSize,
+	public Properties(String ip, String port, boolean sound, boolean GUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {
 		super();
 		Ip = ip;
 		Port = port;
 		this.sound = sound;
-		GUI = gUI;
+		this.GUI = GUI;
 		this.windowWidthSize = windowWidthSize;
 		this.windowHeightSize = windowHeightSize;
 		this.amountOfThreads = amountOfThreads;
+	}
+	
+	
+	
+	public Properties(String ip, String port, String sound, String GUI, String windowWidthSize,
+			String windowHeightSize, String amountOfThreads) {
+		super();
+		Ip = ip;
+		Port = port;
+		this.sound = Boolean.valueOf(sound);
+		this.GUI = Boolean.valueOf(GUI);
+		this.windowWidthSize = Integer.parseInt(windowWidthSize);
+		this.windowHeightSize = Integer.parseInt(windowHeightSize);
+		this.amountOfThreads = Integer.parseInt(amountOfThreads);
 	}
 	public String getIp() {
 		return Ip;
@@ -90,13 +104,7 @@ public class Properties implements Serializable{
 		System.out.println("Thread number: "+this.getAmountOfThreads());
 		System.out.println("Height: "+this.getWindowHeightSize()+" width: "+this.getWindowWidthSize());
 	}
-	@Override
-	public String toString() {
-		StringBuilder builder= new StringBuilder();
-		builder.append("IP "+this.Ip+"\nPort "+this.Port+"\nSound "+this.isSound()+"\nGui "+this.isGUI()+ "\nWidth "+this.windowWidthSize.toString()+
-				"\nHeight "+this.windowHeightSize.toString()+"\nThreads "+this.amountOfThreads);
-		return builder.toString();
-	}
+
 
 	
 }

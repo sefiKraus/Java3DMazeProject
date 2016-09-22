@@ -2,6 +2,7 @@ package Model;
 
 import java.util.HashMap;
 
+import Presenter.Properties;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
@@ -26,7 +27,7 @@ public interface Model {
 	public void loadSolutionHashMapFromZip();
 	public void handleChangeMazeStartPosition(String mazeName,Position position);
 	public void handleLoadProperties(String xmlPath);
-	
+	public void handleSaveProperties(Properties prop,String xmlPath);
 	
 	
 }

@@ -5,22 +5,19 @@
    <boolean>true</boolean>
   </void>
   <void property="amountOfThreads">
-   <int>3</int>
+   <int>1</int>
   </void>
   <void property="ip">
    <string>127.0.0.1</string>
   </void>
   <void property="port">
-   <string>2400</string>
-  </void>
-  <void property="sound">
-   <boolean>true</boolean>
+   <string>5000</string>
   </void>
   <void property="windowHeightSize">
-   <int>200</int>
+   <int>500</int>
   </void>
   <void property="windowWidthSize">
-   <int>200</int>
+   <int>500</int>
   </void>
  </object>
 </java>

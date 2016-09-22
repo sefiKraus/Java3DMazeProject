@@ -8,7 +8,6 @@ import java.util.Observer;
 
 import Model.Model;
 import Model.PropertiesXmlHandler;
-import View.CommonView;
 import View.CommonGuiView;
 import View.MyGuiView;
 import View.MyView;
@@ -180,6 +179,7 @@ public class Presenter implements Observer{
 				ui.showMessage("Type save solution map to save the solutions");
 				ui.showMessage("Type load solution map to load the solutions");
 				ui.showMessage("display solution list");
+				ui.showMessage("In order to change to GUI type gui");
 				ui.showMessage("Type exit to close the game");
 				ui.showMessage("----------------------------------------------");
 
@@ -243,6 +243,21 @@ public class Presenter implements Observer{
 			case ("CLI"):
 			{
 				String command=(String)ui.getDataFromView("");
+				if(command.equals("gui"))
+				{
+					try {
+						Properties tempProperties=PropertiesXmlHandler.getPropertiesInstance();
+						tempProperties.setGUI(true);
+						PropertiesXmlHandler.writeProperties(tempProperties, "res/properties.xml");
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					ui.showMessage("Please restart game");
+				}
+				else
+				{
+
 				for (String s : this.commandMap.keySet()) {
 					if(command.matches(s))
 					{
@@ -250,7 +265,7 @@ public class Presenter implements Observer{
 						this.commandMap.get(s).doCommand(arguments);
 					}
 
-						
+				}		
 				}
 
 			}
@@ -313,6 +328,11 @@ public class Presenter implements Observer{
 				ui.showAutoSolution((String)ui.getDataFromView("AutoSolution"),m.getMazeMap().get((String)ui.getDataFromView("AutoSolution")));
 			}
 			break;
+			case("saveSettings"):
+			{
+				
+				//m.handleSaveProperties(prop, xmlPath);
+			}
 			default:
 				break;
 			}
@@ -360,12 +380,7 @@ public class Presenter implements Observer{
 	{
 		m.handleLoadProperties(xmlPath);
 		
-		try {
-			PropertiesXmlHandler.getPropertiesInstance().printProperties();
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
 		
 		if(this.ui!=null)
 		{

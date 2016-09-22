@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import Presenter.Properties;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
@@ -390,6 +391,17 @@ public class MyModel extends CommonModel {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void handleSaveProperties(Properties prop,String xmlPath) {
+		try {
+			PropertiesXmlHandler.writeProperties(prop, xmlPath);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 

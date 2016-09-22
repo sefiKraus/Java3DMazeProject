@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.swing.text.AbstractDocument.Content;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -353,14 +351,101 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[Message Box]--------------------*/
 		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 		
-		
-		
-		
-		
-		
-		
+
 		/*********************Listeners handle*********************/
 
+		
+		openPropertiesItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				Shell propShell= new Shell(shell,SWT.APPLICATION_MODAL| SWT.DIALOG_TRIM);
+				propShell.setLayout(new GridLayout(2,false));
+				 propShell.setSize(shell.getBounds().width,shell.getBounds().height);
+				 propShell.setText("My Properties Form");
+				int size=Properties.class.getDeclaredFields().length;
+				
+				Label labels[]=new Label[size];
+				Text values[]= new Text[size];
+				
+				for(int i=1;i<size;i++)
+				{
+					labels[i]=new Label(propShell, SWT.NONE|SWT.READ_ONLY);
+					labels[i].setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
+					
+					labels[i].setText(Properties.class.getDeclaredFields()[i].getName());
+
+					if(Properties.class.getDeclaredFields()[i].getType().getName().equals("boolean"))
+					{
+						values[i]=new Text(propShell, SWT.SINGLE|SWT.BORDER);
+						values[i].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+						values[i].setText("Please insert true/false");
+					}
+					else
+					{
+						
+					
+					values[i]=new Text(propShell, SWT.SINGLE|SWT.BORDER);
+					values[i].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+					}
+					
+					
+			
+				}
+				
+				
+				
+				Button saveSettings=new Button(propShell, SWT.PUSH);
+				saveSettings.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
+				saveSettings.setText("Submit Your Properties");
+				
+				saveSettings.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						StringBuilder builder=new StringBuilder();
+						String[] typeSaver=new String[size];
+						
+						for(int i=0;i<size-1;i++)
+						{
+							builder.append(values[i+1].getText()+" ");
+						}
+						String[] val=builder.toString().split(" ");
+						for (String string : val) {
+							System.out.println(string.toString());
+						}
+						Properties tempProperties=new Properties(val[0],val[1],val[2],val[3],val[4],val[5],val[6]);
+						try {
+							PropertiesXmlHandler.writeProperties(tempProperties, "res/properties.xml");
+							
+							showMessage("Please restart game to apply properties changes");
+							
+							propShell.dispose();
+							shell.dispose();
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
+				propShell.open();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		
 		generateBtn.addSelectionListener(new SelectionListener() {
 			

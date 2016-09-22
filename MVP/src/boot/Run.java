@@ -4,11 +4,8 @@ package boot;
 
 import java.io.FileNotFoundException;
 
-import Model.Model;
 import Model.MyModel;
-import Model.PropertiesXmlHandler;
 import Presenter.Presenter;
-import Presenter.Properties;
 import View.MyGuiView;
 import View.MyView;
 import View.View;
