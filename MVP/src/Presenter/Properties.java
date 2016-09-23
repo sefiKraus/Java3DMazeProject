@@ -1,6 +1,7 @@
 package Presenter;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 /**
  * 
  * @author Krausz Sefi 305371320
@@ -104,7 +105,26 @@ public class Properties implements Serializable{
 		System.out.println("Thread number: "+this.getAmountOfThreads());
 		System.out.println("Height: "+this.getWindowHeightSize()+" width: "+this.getWindowWidthSize());
 	}
+	
+	public String[] getPropertiesAndValues()
+	{
+		
+		StringBuilder builder=new StringBuilder();
+		builder.append("Ip "+this.Ip+" "+this.Ip.getClass().getSimpleName()+
+				"\nPort "+this.Port+" "+this.Port.getClass().getSimpleName()
+				+"\nGUI "+this.GUI+" "+"Boolean"+
+				"\nsound "+this.sound+" "+"Boolean"+
+				"\namountOfThreads "+this.amountOfThreads+" "+"Int"+
+				"\nwindowHeightSize "+this.windowHeightSize+" "+this.windowHeightSize.getClass().getSimpleName()+
+				"\nwindowWidthSize "+this.windowWidthSize+" "+this.windowWidthSize.getClass().getSimpleName());
+		String[] data=builder.toString().split("\n");
+
+		
+		return data;
+		
+	}
 
 
+	
 	
 }

@@ -195,10 +195,10 @@ public class MyModel extends CommonModel {
 				});
 				try{
 					this.solutionMap.put(this.mazeMap.get(name),solution.get());
-					this.noteObservers("Solve", "Solution for: "+name+" with algorithm: "+algorithmUsed+" is ready");
+					this.noteObservers("Solve", "Solution for: "+name+" is ready");
 				}catch(Exception e)
 				{
-					this.noteObservers("Error","Encountered problem during solving: "+name+" with algorithm: "+algorithmUsed);
+					this.noteObservers("Error","Encountered problem during solving: "+name);
 					e.printStackTrace();
 				}
 			}
@@ -219,11 +219,11 @@ public class MyModel extends CommonModel {
 				try
 				{
 					this.solutionMap.put(this.mazeMap.get(name),solution.get());
-					this.noteObservers("Solve", "Solution for: "+name+" with algorithm: "+algorithmUsed+" is ready");
+					this.noteObservers("Solve", "Solution for: "+name+" is ready");
 				}
 				catch(Exception e)
 				{
-					this.noteObservers("Error","Encountered problem during solving: "+name+" with algorithm: "+algorithmUsed);
+					this.noteObservers("Error","Encountered problem during solving: "+name);
 					e.printStackTrace();
 				}
 			}

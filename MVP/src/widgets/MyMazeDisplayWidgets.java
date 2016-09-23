@@ -5,14 +5,16 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-
+import sun.audio.*;
+import org.eclipse.swt.graphics.GC;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 
 public  class MyMazeDisplayWidgets extends MazeDisplay{
-
 	private GameCharacter player;
 	private GameCharacter goal;
 	private int[][] mazeData;
@@ -20,7 +22,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	int currentLevel;
 	private Image floorImage;
 	private Image cellImage;
-	
+	private boolean won=false;
 	public MyMazeDisplayWidgets(Composite composite, int style,Maze3d maze) {
 		super(composite, style);
 		this.maze=maze;
@@ -136,6 +138,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 			
 			if(player.getPlayerPosition().equals(goal.getPlayerPosition()))
 			{
+				this.won=true;
 				displayVictoryScreen();
 			}
 	}
@@ -162,6 +165,16 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	@Override
 	public Maze3d getMaze() {
 		return maze;
+	}
+
+
+	public boolean isWon() {
+		return won;
+	}
+
+
+	public void setWon(boolean won) {
+		this.won = won;
 	}
 	
 	

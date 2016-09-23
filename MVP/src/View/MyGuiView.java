@@ -2,6 +2,7 @@ package View;
 
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.omg.CORBA.portable.ValueBase;
 
 import Model.PropertiesXmlHandler;
 import Presenter.Properties;
@@ -77,7 +80,7 @@ public class MyGuiView extends CommonGuiView{
 	
 	Menu menuBar,fileMenu,aboutMenu,propertiesMenu;
 	MenuItem fileMenuHeader,aboutMenuHeader,propertiesMenuHeader;
-	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem,savePropertiesItem,loadPropertiesItem;
+	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem;
 	
 	
 	public MyGuiView(String windowTitle, int width, int height) {
@@ -145,11 +148,6 @@ public class MyGuiView extends CommonGuiView{
 		openPropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
 		openPropertiesItem.setText("My Properties");
 		
-		savePropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
-		savePropertiesItem.setText("&Save Properties");
-		
-		loadPropertiesItem=new MenuItem(propertiesMenu, SWT.PUSH);
-		loadPropertiesItem.setText("&Load Properties");
 		
 		/*--[About Header and items]--*/
 
@@ -359,84 +357,120 @@ public class MyGuiView extends CommonGuiView{
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				try {
+					Shell propShell=new Shell(shell, SWT.APPLICATION_MODAL|SWT.DIALOG_TRIM);
+					propShell.setLayout(new GridLayout(2,false));
+					String[] data=PropertiesXmlHandler.getPropertiesInstance().getPropertiesAndValues();
+					Label[] labels=new Label[data.length];
 				
-				Shell propShell= new Shell(shell,SWT.APPLICATION_MODAL| SWT.DIALOG_TRIM);
-				propShell.setLayout(new GridLayout(2,false));
-				 propShell.setSize(shell.getBounds().width,shell.getBounds().height);
-				 propShell.setText("My Properties Form");
-				int size=Properties.class.getDeclaredFields().length;
-				
-				Label labels[]=new Label[size];
-				Text values[]= new Text[size];
-				
-				for(int i=1;i<size;i++)
-				{
-					labels[i]=new Label(propShell, SWT.NONE|SWT.READ_ONLY);
-					labels[i].setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-					
-					labels[i].setText(Properties.class.getDeclaredFields()[i].getName());
+					HashMap<String,Object> stringMap=new HashMap<String,Object>();
+					HashMap<String, String>typeMap=new HashMap<String,String>();
+					for(int i=0;i<data.length;i++)
+					{
+						StringBuilder builder=new StringBuilder(data[i]);
+						String[] value=builder.toString().split(" ");
+						labels[i]=new Label(propShell,SWT.NONE);
+						labels[i].setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+						labels[i].setText(value[0]);
+						if(!value[2].equals("Boolean"))
+						{
+							Text text=new Text(propShell, SWT.BORDER);
+							text.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+							text.setText(value[1].toString());
+							//stringMap.put(value[0],value[1]);
+							stringMap.put(value[0],text);
+						}
+						else
+						{
+							Combo combo=new Combo(propShell, SWT.READ_ONLY);
+							combo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+							String[] items={"true","false"};
+							combo.setItems(items);
+							combo.setText(value[1]);
+						//stringMap.put(value[0], value[1]);
+							stringMap.put(value[0], combo);
+						}
+						typeMap.put(value[0], value[2]);
 
-					if(Properties.class.getDeclaredFields()[i].getType().getName().equals("boolean"))
-					{
-						values[i]=new Text(propShell, SWT.SINGLE|SWT.BORDER);
-						values[i].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-						values[i].setText("Please insert true/false");
 					}
-					else
-					{
+				
+					Button submitProperties=new Button(propShell, SWT.PUSH);
+					submitProperties.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
+					submitProperties.setText("Submit Your Changes");
+					
+					
+					submitProperties.addSelectionListener(new SelectionListener() {
 						
+						@Override
+						public void widgetSelected(SelectionEvent arg0) {
+							Object obj;
+							Iterator<String> stringMapitr=stringMap.keySet().iterator();
+							Iterator<String> typeMapitr=typeMap.keySet().iterator();
+							String name = null;
+							String dataType=null;
+							String value=null;
+							while(stringMapitr.hasNext())
+							{
+								
+								name=stringMapitr.next();
+								obj=stringMap.get(name);
+								if(obj.getClass().getSimpleName().equals("Text"))
+								{
+									Text tempText=(Text)stringMap.get(name);
+									value=tempText.getText();
+								}
+								else if(obj.getClass().getSimpleName().equals("Combo"))
+								{
+									Combo tempCombo=(Combo)stringMap.get(name);
+									value=tempCombo.getText();
+								}
+								while(typeMapitr.hasNext())
+								{
+									String tempName=typeMapitr.next();
+									if(tempName.equals(name))
+									{
+										
+										dataType=typeMap.get(tempName);
+										if(dataType.matches("[Ss]tring"))
+										{
+											obj=(String)stringMap.get(value);
+											
+										}
+										else if(dataType.matches("Interger")|| dataType.matches("[Ii]nt"))
+										{
+											obj=Integer.valueOf(value);
+										}
+										else if(dataType.matches("[Bb]oolean"))
+										{
+											obj=Boolean.parseBoolean(value);
+										}
+									}
+									
+								}
+								
+							
+							}
+
+							
+							
+							
+						}
+						
+						@Override
+						public void widgetDefaultSelected(SelectionEvent arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
 					
-					values[i]=new Text(propShell, SWT.SINGLE|SWT.BORDER);
-					values[i].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-					}
+					propShell.open();
 					
-					
-			
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				
 				
-				
-				Button saveSettings=new Button(propShell, SWT.PUSH);
-				saveSettings.setLayoutData(new GridData(SWT.BOTTOM,SWT.BOTTOM,false,false,1,1));
-				saveSettings.setText("Submit Your Properties");
-				
-				saveSettings.addSelectionListener(new SelectionListener() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent arg0) {
-						StringBuilder builder=new StringBuilder();
-						String[] typeSaver=new String[size];
-						
-						for(int i=0;i<size-1;i++)
-						{
-							builder.append(values[i+1].getText()+" ");
-						}
-						String[] val=builder.toString().split(" ");
-						for (String string : val) {
-							System.out.println(string.toString());
-						}
-						Properties tempProperties=new Properties(val[0],val[1],val[2],val[3],val[4],val[5],val[6]);
-						try {
-							PropertiesXmlHandler.writeProperties(tempProperties, "res/properties.xml");
-							
-							showMessage("Please restart game to apply properties changes");
-							
-							propShell.dispose();
-							shell.dispose();
-						} catch (FileNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-					@Override
-					public void widgetDefaultSelected(SelectionEvent arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-				
-				propShell.open();
 			}
 			
 			@Override

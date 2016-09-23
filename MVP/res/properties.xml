@@ -11,13 +11,16 @@
    <string>127.0.0.1</string>
   </void>
   <void property="port">
-   <string>5000</string>
+   <string>2400</string>
+  </void>
+  <void property="sound">
+   <boolean>true</boolean>
   </void>
   <void property="windowHeightSize">
-   <int>500</int>
+   <int>600</int>
   </void>
   <void property="windowWidthSize">
-   <int>500</int>
+   <int>600</int>
   </void>
  </object>
 </java>
