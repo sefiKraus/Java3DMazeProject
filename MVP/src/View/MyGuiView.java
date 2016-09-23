@@ -43,7 +43,11 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import widgets.MazeDisplay;
 import widgets.MyMazeDisplayWidgets;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 10/09/2016
+ */
 public class MyGuiView extends CommonGuiView{
 
 	HashMap<String, Object>notifications;
@@ -82,14 +86,21 @@ public class MyGuiView extends CommonGuiView{
 	MenuItem fileMenuHeader,aboutMenuHeader,propertiesMenuHeader;
 	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem;
 	
-	
+	/**
+	 * 
+	 * @param windowTitle
+	 * @param width
+	 * @param height
+	 */
 	public MyGuiView(String windowTitle, int width, int height) {
 		super(windowTitle, width, height);
 		this.notifications=new HashMap<String,Object>();
 		this.mazeSolMap=new HashMap<String, Solution<Position>>();
 		
 	}
-
+/**
+ * Initiating every widget inside the gui including labels, texts, buttons, menus 
+ */
 	@Override
 	void initWidgets() {
 		
@@ -177,7 +188,7 @@ public class MyGuiView extends CommonGuiView{
 		
 		
 	
-		
+		/*------------------------------------------------------------------*/
 		final StackLayout StackLayout=new StackLayout();
 		
 		
@@ -765,6 +776,11 @@ public class MyGuiView extends CommonGuiView{
 		
 	}
 
+	
+	/**
+	 * @param message
+	 * This method displaying messages to the player
+	 */
 	@Override
 	public void showMessage(String message) {
 		if(message!=null)
@@ -827,7 +843,11 @@ public class MyGuiView extends CommonGuiView{
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * This method initializing the listeners
+	 * 
+	 * Also added Zoom in/Zoom out
+	 */
 	public void initLisenerts()
 	{
 		keyListener=new KeyListener() {
@@ -920,7 +940,17 @@ public class MyGuiView extends CommonGuiView{
 		// TODO Auto-generated method stub
 		
 	}
-
+/**
+ * @param HashMap<String, Maze3d>mazeMap
+ * @param HashMap<Maze3d, Solution<Position>> solutionMap
+ * 	
+ * 	This method creates HashMap<String, Solution<Position>>mazeSolMap by merging   mazeMap and solutionMap
+ * 	by that the player is able to see which mazes can be solved
+ * 
+ * 	please notice that if the maze was solved before it won't appear again
+ * 	 
+ * 
+ */
 	@Override
 	public void showSolutionList(HashMap<String, Maze3d>mazeMap,  HashMap<Maze3d, Solution<Position>> solutionMap) {
 			
@@ -948,6 +978,12 @@ public class MyGuiView extends CommonGuiView{
 
 	}
 
+	/**
+	 * @param String name
+	 * @param Solution<Position> solution
+	 * 
+	 * This method is activated when the player wants to display solution 
+	 */
 	@Override
 	public void showSolution(String name,Solution<Position> solution) {
 		timer=new Timer();
@@ -990,6 +1026,11 @@ public class MyGuiView extends CommonGuiView{
 		});
 	}
 
+	
+	/**
+	 * @param Set<String> set
+	 * 
+	 */
 	@Override
 	public void showMazeList(Set<String> set) {
 		
@@ -1003,6 +1044,13 @@ public class MyGuiView extends CommonGuiView{
 		mazeList.setItems(builder.toString().split(" "));
 	}
 
+	
+	/**
+	 * @paramString mazeName
+	 * @param Maze3d maze
+	 * 
+	 * This method allows the player to use the hint button in order to solve the maze
+	 */
 	@Override
 	public void showAutoSolution(String mazeName, Maze3d maze) {
 		mazeShell=new Shell(shell, SWT.SHELL_TRIM);

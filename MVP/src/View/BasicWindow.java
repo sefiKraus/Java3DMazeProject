@@ -2,7 +2,11 @@ package View;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 10/09/2016
+ */
 abstract class BasicWindow extends CommonView implements Runnable{
 	Display display;
 	Shell shell;

@@ -4,7 +4,11 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerators.Maze3d;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 15/09/2016
+ */
 public abstract class MazeDisplay extends Canvas{
 
 

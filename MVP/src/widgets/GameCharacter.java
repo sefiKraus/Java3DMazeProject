@@ -6,13 +6,25 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerators.Position;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 15/09/2016
+ */
 public class GameCharacter extends Canvas{
 	
 	 Position playerPosition;
 	 Image playerImage;
 	
-	
+	/**
+	 * 
+	 * @param composite
+	 * @param style
+	 * @param position
+	 * @param imagePath
+	 * 
+	 * 
+	 */
 	public GameCharacter(Composite composite, int style,Position position,String imagePath) {
 		super(composite, style);
 		this.playerPosition=position;
@@ -20,7 +32,12 @@ public class GameCharacter extends Canvas{
 		
 
 	}
-	
+	/**
+	 * 
+	 * @param cellWidth
+	 * @param cellHeight
+	 * @param gc
+	 */
 	public void draw(int cellWidth,int cellHeight,GC gc)
 	{
 		gc.drawImage(this.playerImage, 0, 0	, this.playerImage.getBounds().width, (this.playerImage.getBounds().height), this.playerPosition.getX()*cellWidth, this.playerPosition.getZ()*cellHeight, cellWidth,cellHeight);

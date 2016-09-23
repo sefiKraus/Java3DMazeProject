@@ -13,7 +13,11 @@ import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
-
+/**
+ * 
+ * @author Krausz Sefi 305371320
+ * @since 15/09/2016
+ */
 public  class MyMazeDisplayWidgets extends MazeDisplay{
 	private GameCharacter player;
 	private GameCharacter goal;
@@ -23,16 +27,30 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	private Image floorImage;
 	private Image cellImage;
 	private boolean won=false;
+	
+	/**
+	 * 
+	 * @param composite
+	 * @param style
+	 * @param maze
+	 */
 	public MyMazeDisplayWidgets(Composite composite, int style,Maze3d maze) {
 		super(composite, style);
 		this.maze=maze;
 		maze.setPlayerPosition(new Position(maze.getStartPosition().getY(),maze.getStartPosition().getX(),maze.getStartPosition().getZ()));
+		
 		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
+		
 		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.png");
+		
 		this.setMazeData(maze.getCrossSectionByY(player.getPlayerPosition().getY()));
+		
 		this.currentLevel=player.getPlayerPosition().getY();
+		
 		this.floorImage=new Image(null, "res/images/path.png");
+		
 		this.cellImage=new Image(null, "res/images/grass.png");
+		
 		this.addPaintListener(new PaintListener() {
 			
 			@Override
@@ -123,6 +141,15 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		this.movePlayerTo(player.getY(),player.getX(),player.getZ()-1);
 
 	}
+
+	/**
+	 * @param y
+	 * @param x
+	 * @param z
+	 * 
+	 * This method allows the character to move inside the board
+	 * 
+	 */
 	@Override
 	public void movePlayer(int y,int x,int z)
 	{
@@ -142,6 +169,13 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 				displayVictoryScreen();
 			}
 	}
+	/**
+	 * @param y
+	 * @param x
+	 * @param z
+	 * 
+	 * This method is using movePlayer method in order to check if the player can move to position(y,x,z)
+	 */
 	@Override
 	public void movePlayerTo(int y,int x,int z)
 	{
@@ -152,6 +186,10 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		}
 	}
 
+	/**
+	 * This method is activated when the player reaches the goal position 
+	 * it opens a new victory shell
+	 */
 	public void displayVictoryScreen()
 	{
 		
