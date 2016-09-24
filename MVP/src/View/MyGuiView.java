@@ -494,7 +494,7 @@ public class MyGuiView extends CommonGuiView{
 								
 								
 							}
-								PropertiesXmlHandler.writeProperties(PropertiesXmlHandler.getPropertiesInstance(), "res/properties.xml");
+								PropertiesXmlHandler.writeProperties(prop, "res/properties.xml");
 							} catch (SecurityException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
