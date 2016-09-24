@@ -2,7 +2,6 @@ package View;
 
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,6 +22,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,7 +37,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.omg.CORBA.portable.ValueBase;
 
 import Model.PropertiesXmlHandler;
 import Presenter.Properties;
@@ -189,27 +189,28 @@ public class MyGuiView extends CommonGuiView{
 		shell.setMenuBar(menuBar);
 		
 		
-	
+		super.getShell().setBackgroundImage(new Image(null, "res/images/backGround.png"));
+		Image backImage=new Image(null, "res/images/ezWall.png");
 		/*------------------------------------------------------------------*/
 		final StackLayout StackLayout=new StackLayout();
 		
-		
 		/*--------------------[This is Generate Button]--------------------*/
 		 generateBtn=new Button(shell, SWT.PUSH);
-		
-		
 		generateBtn.setLayoutData(new GridData(SWT.None,SWT.NONE,false,false,1,1));
 		generateBtn.setText("Generate 3D Maze");
+
+
 		/*--------------------[This is another composite in main window]--------------------*/
 		 dataDisplayer=new Composite(shell, SWT.BORDER);
 		dataDisplayer.setLayout(StackLayout);
 		dataDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,4));
+		dataDisplayer.setBackgroundImage(backImage);
 		
 		
 		/*--------------------[Maze Properties form after pressing Generate 3D maze button]--------------------*/
 			 mazeForm=new Composite(dataDisplayer,SWT.BORDER);
 			mazeForm.setLayout(new GridLayout(2,false));
-			
+			mazeForm.setBackgroundImage(backImage);
 			
 			 mazeLabel=new Label(mazeForm, SWT.NONE); //Maze Name
 			mazeLabel.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
@@ -267,7 +268,7 @@ public class MyGuiView extends CommonGuiView{
 		
 		 displayMazeForm=new Composite(dataDisplayer, SWT.BORDER);
 		displayMazeForm.setLayout(new GridLayout(2,false));
-		
+		displayMazeForm.setBackgroundImage(backImage);
 		mazeNameLabel=new Label(displayMazeForm, SWT.NONE);
 		mazeNameLabel.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 		mazeNameLabel.setText("Enter Requiered Maze Name:");
@@ -291,7 +292,7 @@ public class MyGuiView extends CommonGuiView{
 			
 			solveForm=new Composite(dataDisplayer, SWT.BORDER);
 			solveForm.setLayout(new GridLayout(2,false));
-			
+			solveForm.setBackgroundImage(backImage);
 			solveMazeLabel=new Label(solveForm, SWT.NONE);
 			solveMazeLabel.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 			solveMazeLabel.setText("Choose Maze To Solve: ");
@@ -325,7 +326,7 @@ public class MyGuiView extends CommonGuiView{
 				
 				displaySolutionForm=new Composite(dataDisplayer, SWT.BORDER);
 				displaySolutionForm.setLayout(new GridLayout(2,false));
-				
+				displaySolutionForm.setBackgroundImage(backImage);
 				displaySolutionFor=new Label(displaySolutionForm, SWT.NONE);
 				displaySolutionFor.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 				displaySolutionFor.setText("Choose a maze to solve: ");
@@ -348,7 +349,7 @@ public class MyGuiView extends CommonGuiView{
 		
 		saveForm=new Composite(dataDisplayer, SWT.BORDER);
 		saveForm.setLayout(new GridLayout(1,false));
-		
+		saveForm.setBackgroundImage(backImage);
 		mazeList=new List(saveForm, SWT.SINGLE|SWT.BORDER);
 		mazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		mazeList.pack();
@@ -373,6 +374,14 @@ public class MyGuiView extends CommonGuiView{
 				try {
 					Shell propShell=new Shell(shell, SWT.APPLICATION_MODAL|SWT.DIALOG_TRIM);
 					propShell.setLayout(new GridLayout(2,false));
+					propShell.addDisposeListener(new DisposeListener() {
+						
+						@Override
+						public void widgetDisposed(DisposeEvent arg0) {
+							propShell.dispose();
+						}
+					});
+					
 					String[] data=PropertiesXmlHandler.getPropertiesInstance().getPropertiesAndValues();
 					Label[] labels=new Label[data.length];
 				
@@ -415,7 +424,6 @@ public class MyGuiView extends CommonGuiView{
 						@Override
 						public void widgetSelected(SelectionEvent arg0) {
 						
-							Iterator<String> typeItr=typeMap.keySet().iterator();
 							
 							Iterator<String> labelItr=stringMap.keySet().iterator();
 							
@@ -494,6 +502,7 @@ public class MyGuiView extends CommonGuiView{
 								
 								
 							}
+							//Saving properties
 								PropertiesXmlHandler.writeProperties(prop, "res/properties.xml");
 							} catch (SecurityException e1) {
 								// TODO Auto-generated catch block
@@ -502,7 +511,8 @@ public class MyGuiView extends CommonGuiView{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-									
+							showMessage("Please restart game for changes to take place");
+							propShell.dispose();
 						}
 						
 						@Override
@@ -841,7 +851,8 @@ public class MyGuiView extends CommonGuiView{
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
 			mazeShell.setLayout(new GridLayout(2,false));
-			mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
+			mazeShell.setSize(shell.getSize().x,shell.getSize().y);
+			mazeShell.setBackgroundImage(new Image(null,"res/images/ezWall.png"));
 			 maze=new Maze3d(byteMaze);
 			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
 			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
@@ -849,12 +860,12 @@ public class MyGuiView extends CommonGuiView{
 		
 			 
 			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell, SWT.DOUBLE_BUFFERED,maze);
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,2));
+			this.mazeDisplayer.setSize(shell.getBounds().width, shell.getBounds().height);
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,2));
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeDisplayer.addMouseWheelListener(mouseWheelListener);
 			String name=mazeName.getText();
 			this.mazeShell.setText(name);
-			
 			
 			
 			this.mazeShell.open();

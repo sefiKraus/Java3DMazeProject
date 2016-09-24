@@ -8,10 +8,10 @@
    <int>1</int>
   </void>
   <void property="ip">
-   <string>127.0.0.112</string>
+   <string>127.0.0.1</string>
   </void>
   <void property="port">
-   <string>24002</string>
+   <string>5000</string>
   </void>
   <void property="windowHeightSize">
    <int>600</int>

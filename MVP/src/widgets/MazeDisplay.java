@@ -40,4 +40,8 @@ public abstract class MazeDisplay extends Canvas{
 	public abstract void movePlayerTo(int y,int x,int z);
 	
 	public abstract  void movePlayer(int y,int x,int z);
+	
+	public abstract boolean canMoveUp();
+	
+	public abstract boolean canMoveDown();
 }

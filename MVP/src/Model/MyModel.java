@@ -62,7 +62,12 @@ public class MyModel extends CommonModel {
 		this.mazeMap=new HashMap<String,Maze3d>();
 		this.solutionMap=new HashMap<Maze3d,Solution<Position>>();
 		this.notifications=new HashMap<String,Object>();
-		this.threadPool=Executors.newFixedThreadPool(1);
+		try {
+			this.threadPool=Executors.newFixedThreadPool(PropertiesXmlHandler.getPropertiesInstance().getAmountOfThreads());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

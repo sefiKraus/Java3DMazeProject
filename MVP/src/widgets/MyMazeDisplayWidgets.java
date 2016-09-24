@@ -1,15 +1,14 @@
 package widgets;
 
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import sun.audio.*;
-import org.eclipse.swt.graphics.GC;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -38,6 +37,12 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		super(composite, style);
 		this.maze=maze;
 		maze.setPlayerPosition(new Position(maze.getStartPosition().getY(),maze.getStartPosition().getX(),maze.getStartPosition().getZ()));
+		
+		Image upArrow=new Image(null, "res/images/up.png");
+		
+		Image downArrow=new Image(null, "res/images/down.png");
+		
+		Image twoSidedArrow=new Image(null, "res/images/updown.png");
 		
 		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
 		
@@ -85,6 +90,21 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 						}
 					}
 				}
+				 if(canMoveDown() && canMoveUp())
+				{
+					e.gc.drawImage(twoSidedArrow, 0, 0, twoSidedArrow.getBounds().width,twoSidedArrow.getBounds().height, 0, 0, w, h);
+
+				}
+				 else if(canMoveUp())
+				{
+					e.gc.drawImage(upArrow, 0, 0,upArrow.getBounds().width,upArrow.getBounds().height,0,0,w,h);
+					
+				}
+				 else if(canMoveDown())
+				{
+					e.gc.drawImage(downArrow, 0, 0, downArrow.getBounds().width,downArrow.getBounds().height, 0, 0, w, h);
+				}
+
 				player.draw(w, h, e.gc);
 				if(currentLevel==goal.getY())
 				{
@@ -214,6 +234,23 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	public void setWon(boolean won) {
 		this.won = won;
 	}
-	
+	@Override
+	public boolean canMoveUp()
+	{
+		
+		if(maze.getPositionValueByIndex(player.getPlayerPosition().getY()+1, player.getPlayerPosition().getX(),player.getPlayerPosition().getZ())==0)
+		{
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public boolean canMoveDown()
+	{
+		if(maze.getPositionValueByIndex(player.getPlayerPosition().getY()-1, player.getPlayerPosition().getX(),player.getPlayerPosition().getZ())==0)
+		{
+			return true;
+		}
+		return false;	}
 	
 }

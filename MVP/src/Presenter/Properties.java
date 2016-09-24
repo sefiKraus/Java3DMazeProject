@@ -1,7 +1,6 @@
 package Presenter;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 /**
  * 
  * @author Krausz Sefi 305371320
@@ -20,13 +19,7 @@ public class Properties implements Serializable{
 	private int amountOfThreads;
 
 	public Properties() {
-/*		this.Ip="127.0.0.1";
-		this.Port="3600";
-		this.sound=false;
-		this.windowHeightSize=400;
-		this.windowWidthSize=400;
-		this.amountOfThreads=1;
-		this.GUI=false;*/
+
 	}
 	public Properties(String ip, String port, boolean sound, boolean GUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {
