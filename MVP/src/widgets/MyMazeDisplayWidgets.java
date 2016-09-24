@@ -2,13 +2,19 @@ package widgets;
 
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -26,7 +32,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	private Image floorImage;
 	private Image cellImage;
 	private boolean won=false;
-	
+	Image victoryImage;
 	/**
 	 * 
 	 * @param composite
@@ -43,6 +49,8 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		Image downArrow=new Image(null, "res/images/down.png");
 		
 		Image twoSidedArrow=new Image(null, "res/images/updown.png");
+		
+		this.victoryImage=new Image(null, "res/images/victory.png");
 		
 		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
 		
@@ -210,8 +218,28 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 	 * This method is activated when the player reaches the goal position 
 	 * it opens a new victory shell
 	 */
+	@Override
 	public void displayVictoryScreen()
 	{
+		Shell shell = new Shell (this.getShell(),SWT.SHELL_TRIM |SWT.DOUBLE_BUFFERED);
+        shell.setLayout(new GridLayout());
+        
+
+        shell.addPaintListener(new PaintListener() {
+			
+			@Override
+			public void paintControl(PaintEvent e) {
+			     GC gc = e.gc;
+	                int x = 0, y = 0;
+	                gc.drawImage (victoryImage, x, y);
+	                gc.dispose();				
+			}
+		});
+       
+        shell.setSize(victoryImage.getBounds().width, victoryImage.getBounds().height);
+       
+        shell.open ();
+        
 		
 	}
 
@@ -225,7 +253,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		return maze;
 	}
 
-
+	@Override
 	public boolean isWon() {
 		return won;
 	}

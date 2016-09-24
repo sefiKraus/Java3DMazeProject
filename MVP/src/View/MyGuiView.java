@@ -1061,6 +1061,7 @@ public class MyGuiView extends CommonGuiView{
 								public void run() {
 									Position pos=itr.next();
 									mazeDisplayer.movePlayerTo(pos.getY(), pos.getX(), pos.getZ());
+
 								}
 							});
 						}

@@ -44,4 +44,8 @@ public abstract class MazeDisplay extends Canvas{
 	public abstract boolean canMoveUp();
 	
 	public abstract boolean canMoveDown();
+	
+	public abstract boolean isWon();
+	
+	public abstract void displayVictoryScreen();
 }
