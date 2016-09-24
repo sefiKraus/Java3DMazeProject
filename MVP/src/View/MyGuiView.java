@@ -3,6 +3,8 @@ package View;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -388,7 +390,6 @@ public class MyGuiView extends CommonGuiView{
 							Text text=new Text(propShell, SWT.BORDER);
 							text.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 							text.setText(value[1].toString());
-							//stringMap.put(value[0],value[1]);
 							stringMap.put(value[0],text);
 						}
 						else
@@ -398,7 +399,6 @@ public class MyGuiView extends CommonGuiView{
 							String[] items={"true","false"};
 							combo.setItems(items);
 							combo.setText(value[1]);
-						//stringMap.put(value[0], value[1]);
 							stringMap.put(value[0], combo);
 						}
 						typeMap.put(value[0], value[2]);
@@ -414,57 +414,95 @@ public class MyGuiView extends CommonGuiView{
 						
 						@Override
 						public void widgetSelected(SelectionEvent arg0) {
+						
+							Iterator<String> typeItr=typeMap.keySet().iterator();
+							
+							Iterator<String> labelItr=stringMap.keySet().iterator();
+							
+							String labelName=null;
+							String labelType=null;
 							Object obj;
-							Iterator<String> stringMapitr=stringMap.keySet().iterator();
-							Iterator<String> typeMapitr=typeMap.keySet().iterator();
-							String name = null;
-							String dataType=null;
+
 							String value=null;
-							while(stringMapitr.hasNext())
+							Method[] methods;
+							try {
+								Properties prop=PropertiesXmlHandler.getPropertiesInstance();
+								methods = prop.getClass().getDeclaredMethods();
+					
+							while(labelItr.hasNext())
 							{
+								labelName=labelItr.next();
 								
-								name=stringMapitr.next();
-								obj=stringMap.get(name);
+								labelType=typeMap.get(labelName);
+								
+								
+								obj=stringMap.get(labelName);
 								if(obj.getClass().getSimpleName().equals("Text"))
 								{
-									Text tempText=(Text)stringMap.get(name);
-									value=tempText.getText();
+									Text text=(Text)stringMap.get(labelName);
+									value=text.getText();
 								}
-								else if(obj.getClass().getSimpleName().equals("Combo"))
+								if(obj.getClass().getSimpleName().equals("Combo"))
 								{
-									Combo tempCombo=(Combo)stringMap.get(name);
-									value=tempCombo.getText();
+									Combo combo=(Combo)stringMap.get(labelName);
+									value=combo.getText();
 								}
-								while(typeMapitr.hasNext())
+								
+								
+								StringBuilder builder=new StringBuilder();
+								
+								if(labelType.matches("[Bb]oolean"))
 								{
-									String tempName=typeMapitr.next();
-									if(tempName.equals(name))
+									builder.append("set"+labelName);
+									obj=Boolean.parseBoolean(value);
+									
+								}
+								else if(labelType.matches("[Ss]tring"))
+								{
+									builder.append("set"+labelName);
+									obj=(String)value;
+								}
+								else if(labelType.matches("[Ii]nteger")|| labelType.matches("[Ii]nt"))
+								{
+									builder.append("set"+labelName);
+									obj=Integer.valueOf(value);
+								}
+								for(int i=0;i<methods.length;i++)
+								{
+									String[] splitedMethodName=methods[i].getName().split(" ");
+									String shoretedName=splitedMethodName[splitedMethodName.length-1];
+									if(shoretedName.matches(builder.toString())|| shoretedName.toLowerCase().matches(builder.toString().toLowerCase()))
 									{
-										
-										dataType=typeMap.get(tempName);
-										if(dataType.matches("[Ss]tring"))
-										{
-											obj=(String)stringMap.get(value);
-											
-										}
-										else if(dataType.matches("Interger")|| dataType.matches("[Ii]nt"))
-										{
-											obj=Integer.valueOf(value);
-										}
-										else if(dataType.matches("[Bb]oolean"))
-										{
-											obj=Boolean.parseBoolean(value);
-										}
+											try {
+												//Object obj1=Properties.class.newInstance();
+												methods[i].invoke(prop,obj);
+											} catch (IllegalAccessException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (IllegalArgumentException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (InvocationTargetException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} 
 									}
+									
+									
 									
 								}
 								
-							
+								
 							}
-
-							
-							
-							
+								PropertiesXmlHandler.writeProperties(PropertiesXmlHandler.getPropertiesInstance(), "res/properties.xml");
+							} catch (SecurityException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (FileNotFoundException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+									
 						}
 						
 						@Override
@@ -514,11 +552,17 @@ public class MyGuiView extends CommonGuiView{
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				
-				String mazeData="generate 3d maze "+mazeNameText.getText()+" "+yAxisText.getText()+" "+xAxisText.getText()+" "+zAxisText.getText();
-				notifications.put("GenerateMaze", mazeData);
-				setChanged();
-				notifyObservers("GenerateMaze");
+				if(Integer.valueOf(yAxisText.getText())>9 &&Integer.valueOf(xAxisText.getText())>9 &&Integer.valueOf(zAxisText.getText())>9)
+				{
+					String mazeData="generate 3d maze "+mazeNameText.getText()+" "+yAxisText.getText()+" "+xAxisText.getText()+" "+zAxisText.getText();
+					notifications.put("GenerateMaze", mazeData);
+					setChanged();
+					notifyObservers("GenerateMaze");
+				}
+				else
+				{
+					showMessage("Please enter correct sizes each size should be at least 10");
+				}
 				
 				
 			}
@@ -804,8 +848,8 @@ public class MyGuiView extends CommonGuiView{
 			 helpSolveBtn.setText("Press here to solve the maze");
 		
 			 
-			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.NONE,maze);
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell, SWT.DOUBLE_BUFFERED,maze);
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,2));
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeDisplayer.addMouseWheelListener(mouseWheelListener);
 			String name=mazeName.getText();

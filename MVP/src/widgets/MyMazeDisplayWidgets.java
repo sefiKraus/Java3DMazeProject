@@ -76,7 +76,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 							
 							e.gc.drawImage(cellImage, 0, 0,cellImage.getBounds().width,cellImage.getBounds().height,
 									y,x,w,h);
-
+							
 						}
 						else
 						{
