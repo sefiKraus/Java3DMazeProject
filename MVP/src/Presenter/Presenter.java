@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.eclipse.swt.widgets.Display;
+
 import Model.Model;
 import Model.PropertiesXmlHandler;
 import View.CommonGuiView;
@@ -446,7 +448,7 @@ public class Presenter implements Observer{
 	
 	public void switchToGui()
 	{
-		this.setUi(new MyGuiView("Welcome Player",700,700));
+		this.setUi(new MyGuiView("Welcome Player",2500,900));
 		((Observable)this.ui).addObserver(this);
 		this.getUi().start();
 

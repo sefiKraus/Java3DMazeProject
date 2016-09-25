@@ -308,6 +308,7 @@ try {
 		this.saveSolutionHashMapToZip();
 		try {
 			this.modelSocket.close();
+			this.stop=false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

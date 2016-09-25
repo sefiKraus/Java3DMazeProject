@@ -119,6 +119,7 @@ public class MyGuiView extends CommonGuiView{
 				shell.dispose();
 			}
 		});
+		
 		//shell.setFullScreen(true);
 		/*--------------------[This is Menu Bar]--------------------*/
 		menuBar=new Menu(shell,SWT.BAR);

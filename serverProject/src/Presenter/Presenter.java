@@ -42,7 +42,7 @@ private void fillCommandMap() {
 
 			@Override
 			public void doCommand(String[] args) {
-				ui.showExit();
+				m.saveSolutionHashMapToZip();
 				m.handleExit();
 			}
 		});
@@ -90,6 +90,15 @@ private void fillCommandMap() {
 			}
 		});
 	
+		commandMap.put("display solution list", new Command() {
+			
+			@Override
+			public void doCommand(String[] args) {
+				
+				ui.showSolvedList(m.getMazeMap(),m.getSolutionMap());
+				
+			}
+		});
 	}
 
 	
@@ -152,6 +161,12 @@ private void fillCommandMap() {
 			}
 			break;
 			case "LoadSolutionMap":
+			{
+				this.activateCommand((String)ui.getDataFromView(data));
+
+			}
+			break;
+			case "SolutionListRequest":
 			{
 				this.activateCommand((String)ui.getDataFromView(data));
 

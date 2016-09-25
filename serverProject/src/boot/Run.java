@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import Presenter.Presenter;
 import algorithms.mazeGenerators.Maze3d;
 import serverProject.Model;
 import serverProject.MyServerModel;
@@ -20,8 +21,12 @@ static volatile boolean stop;
 		BufferedReader in;
 		BufferedReader inClient;
 		 PrintWriter out;
-		Model model=new MyServerModel();
-		stop=true;
+		 Presenter p=new Presenter();
+		MyServerModel model=new MyServerModel();
+		p.setM(model);
+		model.addObserver(p);
+		p.initViewFromPresenter("res/properties.xml");
+	/*	stop=true;
 		Socket client=new Socket("127.0.0.1", 5400);
 		in=new BufferedReader(new InputStreamReader(client.getInputStream()));
 		out=new PrintWriter(client.getOutputStream());
@@ -131,7 +136,7 @@ static volatile boolean stop;
 		}
 		out.println("exit");
 		out.flush();
-		client.close();
+		client.close();*/
 	}
 
 }
