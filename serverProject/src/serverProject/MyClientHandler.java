@@ -18,6 +18,8 @@ public class MyClientHandler extends CommonClientHandler{
 	private Model model;
 	private Thread clientHandlerThread;
 	private ServerProtocol clientHandlerProtocol;
+	
+	
 	public MyClientHandler(Socket clientSocket,Model model) {
 		this.model=model;
 		this.clientSocket=clientSocket;
@@ -82,10 +84,9 @@ public class MyClientHandler extends CommonClientHandler{
 		if(o==this.model)
 		{
 			switch (data) {
-			case "Ready":
+			case "disconnect":
 			{
-				outToClient.print("Test");
-				outToClient.flush();
+				this.closeClientHandler();
 			}
 				break;
 
@@ -98,6 +99,8 @@ public class MyClientHandler extends CommonClientHandler{
 	@Override
 	public void closeClientHandler() {
 		try {
+			this.data="exit";
+			this.setChanged();
 			this.notifyObservers(this);
 			this.inFromClient.close();
 			this.outToClient.close();

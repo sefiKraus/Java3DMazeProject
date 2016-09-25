@@ -7,10 +7,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 import algorithms.mazeGenerators.Maze3d;
 import serverProject.Model;
 import serverProject.MyServerModel;
+import serverProject.PropertiesXmlHandler;
 
 public class Run {
 static volatile boolean stop;
@@ -81,7 +83,26 @@ static volatile boolean stop;
 								System.out.println(line);
 							}
 							break;
-							
+							case "SolutionList":
+							{
+
+								DataInputStream dIn=new DataInputStream(client.getInputStream());
+								int amount=dIn.readInt();
+								if(amount>0)
+								{
+									
+									int i=0;
+									String mazeName=in.readLine();
+									System.out.println(mazeName);
+									while(i<amount)
+									{
+										String solution=in.readLine();
+										System.out.println(solution);
+										i++;	
+									}
+								}
+							}
+							break;
 							case "Error":
 							{
 								System.out.println(dataRecieved);

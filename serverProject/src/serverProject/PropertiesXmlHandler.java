@@ -28,7 +28,7 @@ public class PropertiesXmlHandler {
 	{
 		if(properties==null)
 		{
-			properties=readProperties("resources/properties.xml");
+			properties=readProperties("res/properties.xml");
 		}
 		return properties;
 	}

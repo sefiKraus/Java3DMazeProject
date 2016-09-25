@@ -16,11 +16,10 @@ public class Properties implements Serializable {
 		this.amountOfClients=10;
 	}
 	
-/*	public Properties(int serverPort, int amountOfClients) {
-		super();
+	public Properties(int serverPort, int amountOfClients) {
 		this.serverPort = serverPort;
 		this.amountOfClients = amountOfClients;
-	}*/
+	}
 
 	public void printProperties()
 	{

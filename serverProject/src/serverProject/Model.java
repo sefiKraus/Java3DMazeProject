@@ -2,6 +2,7 @@ package serverProject;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
@@ -19,5 +20,12 @@ public interface Model {
 	public void handleExit();
 	public void saveSolutionHashMapToZip();
 	public void loadSolutionHashMapFromZip();
+	public void handleChangeMazeStartPosition(Socket client,String mazeName,Position position);
+	public void handleLoadProperties(String xmlPath);
+	public void handleSaveProperties(Properties prop,String xmlPath);
+	public void noteObservers(String s,Object data);
+	public void handleDisconnectClient(String port);
+	public ArrayList<ClientHandler> handleGetClientList();
+	public Object getDataFromModel(String required);	
 	
 }

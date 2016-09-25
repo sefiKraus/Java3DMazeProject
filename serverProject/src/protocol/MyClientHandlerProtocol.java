@@ -6,7 +6,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
+import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import serverProject.Model;
@@ -109,8 +111,31 @@ public class MyClientHandlerProtocol implements ServerProtocol{
 
 			@Override
 			public void doCommand(String[] args) {
-				outToClient.println(model.getSolutionMap());
+				outToClient.println("SolutionList");
 				outToClient.flush();
+				
+				int size=model.getSolutionMap().keySet().size();
+				try {
+					DataOutputStream dOut=new DataOutputStream(clientSocket.getOutputStream());
+					dOut.writeInt(size);
+					dOut.flush();
+				for (String string : model.getMazeMap().keySet()) {
+					
+					if(model.getSolutionMap().containsKey(model.getMazeMap().get(string)))
+					{
+						outToClient.println(string);
+						outToClient.flush();
+						
+						outToClient.println(model.getSolutionMap().get(model.getMazeMap().get(string)).getSolution().toString());
+						outToClient.flush();
+					}
+					
+					
+				}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			}
 		});
 		
