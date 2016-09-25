@@ -119,6 +119,7 @@ public class MyGuiView extends CommonGuiView{
 				shell.dispose();
 			}
 		});
+		//shell.setFullScreen(true);
 		/*--------------------[This is Menu Bar]--------------------*/
 		menuBar=new Menu(shell,SWT.BAR);
 		
@@ -374,6 +375,8 @@ public class MyGuiView extends CommonGuiView{
 				try {
 					Shell propShell=new Shell(shell, SWT.APPLICATION_MODAL|SWT.DIALOG_TRIM);
 					propShell.setLayout(new GridLayout(2,false));
+					propShell.setBackgroundImage(new Image(null, "res/images/ezWall.png"));
+					propShell.setText("My Properties");
 					propShell.addDisposeListener(new DisposeListener() {
 						
 						@Override
@@ -845,21 +848,25 @@ public class MyGuiView extends CommonGuiView{
 		}
 	}
 
+	/**
+	 * @param byte[] byteMaze
+	 * This methods receives 3D maze converted to byte array, and it displays the maze
+	 */
 	@Override
 	public void showGeneratedMaze(byte[] byteMaze) {
 		
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
 			mazeShell.setLayout(new GridLayout(2,false));
-			mazeShell.setSize(shell.getSize().x,shell.getSize().y);
+			mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
 			mazeShell.setBackgroundImage(new Image(null,"res/images/ezWall.png"));
 			 maze=new Maze3d(byteMaze);
 			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
 			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 			 helpSolveBtn.setText("Press here to solve the maze");
-		
 			 
-			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell, SWT.DOUBLE_BUFFERED,maze);
+			 
+			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell, SWT.SHELL_TRIM|SWT.DOUBLE_BUFFERED,maze);
 			this.mazeDisplayer.setSize(shell.getBounds().width, shell.getBounds().height);
 			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,2));
 			this.mazeDisplayer.addKeyListener(keyListener);
@@ -1109,11 +1116,11 @@ public class MyGuiView extends CommonGuiView{
 	 */
 	@Override
 	public void showAutoSolution(String mazeName, Maze3d maze) {
-		mazeShell=new Shell(shell, SWT.SHELL_TRIM);
+		mazeShell=new Shell(shell, SWT.SHELL_TRIM|SWT.DOUBLE_BUFFERED);
 		mazeShell.setLayout(new GridLayout(1,false));
+		mazeShell.setBackgroundImage(new Image(null, "res/images/ezWall.png"));
 		mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
 		mazeShell.setText(mazeName);
-		
 		mazeDisplayer=new MyMazeDisplayWidgets(mazeShell, SWT.NONE, maze);
 		mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		mazeShell.open();

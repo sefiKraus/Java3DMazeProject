@@ -64,7 +64,15 @@ public class Presenter implements Observer{
 			@Override
 			public void doCommand(String[] args) {
 				try {
-					ui.showGeneratedMaze(((m.getMazeMap().get(args[1]))).toByteArray());
+					if(m.getMazeMap().containsKey(args[1]))
+					{
+						ui.showGeneratedMaze(((m.getMazeMap().get(args[1]))).toByteArray());
+
+					}
+					else
+					{
+						ui.showMessage("Error displaying requiered maze please check for correct name");
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -231,6 +239,11 @@ public class Presenter implements Observer{
 			case("Solved already"):
 			{
 				ui.showSolution((String)m.getDataFromModel(data),(m.getSolutionMap().get(m.getMazeMap().get(m.getDataFromModel(data)))));
+			}
+			break;
+			case ("SaveSolutionList"):
+			{
+				ui.showMessage((String)m.getDataFromModel(data));
 			}
 			break;
 			default:
@@ -433,7 +446,7 @@ public class Presenter implements Observer{
 	
 	public void switchToGui()
 	{
-		this.setUi(new MyGuiView("Welcome Player",600,600));
+		this.setUi(new MyGuiView("Welcome Player",700,700));
 		((Observable)this.ui).addObserver(this);
 		this.getUi().start();
 

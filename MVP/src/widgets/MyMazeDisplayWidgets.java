@@ -52,6 +52,7 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 		
 		this.victoryImage=new Image(null, "res/images/victory.png");
 		
+		
 		this.player=new GameCharacter(composite, style,new Position(maze.getPlayerPosition()),"res/images/ezreal.png");
 		
 		this.goal=new GameCharacter(composite, style, new Position(maze.getGoalPosition()), "res/images/thresh.png");
@@ -68,8 +69,8 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 			
 			@Override
 			public void paintControl(PaintEvent e) {
-				e.gc.setBackground(new Color(null, 0,0,0));
-				e.gc.setForeground(new Color(null, 0,0,0));
+			/*	e.gc.setBackground(new Color(null, 0,0,0));
+				e.gc.setForeground(new Color(null, 0,0,0));*/
 				int width=getSize().x;
 				int height=getSize().y;
 				int r=Math.min(width, height);
@@ -231,13 +232,23 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 			public void paintControl(PaintEvent e) {
 			     GC gc = e.gc;
 	                int x = 0, y = 0;
+	                
 	                gc.drawImage (victoryImage, x, y);
 	                gc.dispose();				
 			}
 		});
-       
-        shell.setSize(victoryImage.getBounds().width, victoryImage.getBounds().height);
-       
+       shell.addDisposeListener(new DisposeListener() {
+		
+		@Override
+		public void widgetDisposed(DisposeEvent arg0) {
+			shell.dispose();
+			getShell().dispose();
+			
+		}
+	});
+      //  shell.setSize(victoryImage.getBounds().width, victoryImage.getBounds().height);
+       shell.setSize(victoryImage.getBounds().width, victoryImage.getBounds().height);
+
         shell.open ();
         
 		

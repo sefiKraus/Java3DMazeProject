@@ -12,7 +12,7 @@ public class Properties implements Serializable{
 
 	private String Ip;
 	private String Port;
-	private boolean sound;
+	//private boolean sound;
 	private boolean GUI;
 	private Integer windowWidthSize;
 	private Integer windowHeightSize;
@@ -21,12 +21,12 @@ public class Properties implements Serializable{
 	public Properties() {
 
 	}
-	public Properties(String ip, String port, boolean sound, boolean GUI, Integer windowWidthSize,
+	public Properties(String ip, String port, boolean GUI, Integer windowWidthSize,
 			Integer windowHeightSize, int amountOfThreads) {
 		super();
 		Ip = ip;
 		Port = port;
-		this.sound = sound;
+		//this.sound = sound;
 		this.GUI = GUI;
 		this.windowWidthSize = windowWidthSize;
 		this.windowHeightSize = windowHeightSize;
@@ -35,12 +35,12 @@ public class Properties implements Serializable{
 	
 	
 	
-	public Properties(String ip, String port, String sound, String GUI, String windowWidthSize,
+	public Properties(String ip, String port, String GUI, String windowWidthSize,
 			String windowHeightSize, String amountOfThreads) {
 		super();
 		Ip = ip;
 		Port = port;
-		this.sound = Boolean.valueOf(sound);
+		//this.sound = Boolean.valueOf(sound);
 		this.GUI = Boolean.valueOf(GUI);
 		this.windowWidthSize = Integer.parseInt(windowWidthSize);
 		this.windowHeightSize = Integer.parseInt(windowHeightSize);
@@ -58,12 +58,7 @@ public class Properties implements Serializable{
 	public void setPort(String port) {
 		Port = port;
 	}
-	public boolean isSound() {
-		return sound;
-	}
-	public void setSound(boolean sound) {
-		this.sound = sound;
-	}
+
 	public boolean isGUI() {
 		return GUI;
 	}
@@ -94,7 +89,6 @@ public class Properties implements Serializable{
 	public void printProperties()
 	{
 		System.out.println("ip: "+this.getIp()+" Port: "+this.getPort() );
-		System.out.println("Gui mode: "+this.isGUI()+" sound?: "+this.isSound());
 		System.out.println("Thread number: "+this.getAmountOfThreads());
 		System.out.println("Height: "+this.getWindowHeightSize()+" width: "+this.getWindowWidthSize());
 	}
@@ -106,7 +100,6 @@ public class Properties implements Serializable{
 		builder.append("Ip "+this.Ip+" "+this.Ip.getClass().getSimpleName()+
 				"\nPort "+this.Port+" "+this.Port.getClass().getSimpleName()
 				+"\nGUI "+this.GUI+" "+"Boolean"+
-				"\nsound "+this.sound+" "+"Boolean"+
 				"\namountOfThreads "+this.amountOfThreads+" "+"Int"+
 				"\nwindowHeightSize "+this.windowHeightSize+" "+this.windowHeightSize.getClass().getSimpleName()+
 				"\nwindowWidthSize "+this.windowWidthSize+" "+this.windowWidthSize.getClass().getSimpleName());

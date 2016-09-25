@@ -315,7 +315,7 @@ public class MyModel extends CommonModel {
 			objOut.flush();
 			objOut.close();
 			fileOut.close();
-			this.noteObservers("Save",null);
+			this.noteObservers("SaveSolutionList","Solution Map was successfully saved");
 		} catch (Exception  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -346,12 +346,15 @@ public class MyModel extends CommonModel {
 		
 		Set set=cashed.entrySet();
 		Iterator itr=set.iterator();
+		int i=0;
 		while(itr.hasNext())
 		{
-			
+			i++;
 			Map.Entry entry=(Map.Entry)itr.next(); 
 			try {
-				this.solutionMap.put(new Maze3d((byte[])entry.getKey()),(Solution<Position>)entry.getValue());
+				Maze3d maze=new Maze3d((byte[])entry.getKey());
+				this.mazeMap.put("loaded"+i,maze);
+				this.solutionMap.put(maze,(Solution<Position>)entry.getValue());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
