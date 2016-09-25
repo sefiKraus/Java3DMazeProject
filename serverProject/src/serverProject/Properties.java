@@ -43,6 +43,18 @@ public class Properties implements Serializable {
 	}
 	
 	
+	public String[] getPropertiesAndValues()
+	{
+		
+		StringBuilder builder=new StringBuilder();
+		builder.append("serverPort "+this.serverPort+" "+"Int"
+				+"\namountOfClients "+this.amountOfClients+" "+"Int");
+		String[] data=builder.toString().split("\n");
+
+		
+		return data;
+		
+	}
 
 	
 }
