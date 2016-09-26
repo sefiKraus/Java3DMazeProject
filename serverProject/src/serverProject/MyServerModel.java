@@ -17,8 +17,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,8 +49,8 @@ public class MyServerModel extends CommonServerModel {
 	private HashMap<String, Object> notifications;
 	private HashMap<Maze3d, Solution<Position>> solutionMap;
 
-	private ArrayList<ClientHandler> clientList;
-	
+	//private ArrayList<ClientHandler> clientList;
+	private CopyOnWriteArrayList<ClientHandler> clientList;
 	private ServerSocket modelSocket;
 	private int modelPort;
 	private Thread modelThread;
@@ -69,7 +71,7 @@ public class MyServerModel extends CommonServerModel {
 			this.modelPort=PropertiesXmlHandler.getPropertiesInstance().getServerPort();
 			this.connectedClientsAllowed=PropertiesXmlHandler.getPropertiesInstance().getAmountOfClients();
 			this.threadPool=Executors.newFixedThreadPool(this.connectedClientsAllowed);
-			this.clientList=new ArrayList<ClientHandler>();
+			this.clientList=new CopyOnWriteArrayList<ClientHandler>();
 			this.stop=true;
 			this.inFromAdmin=new BufferedReader(new InputStreamReader(System.in));
 			this.run(this);
@@ -90,9 +92,16 @@ public class MyServerModel extends CommonServerModel {
 				switch (data) {
 				case "exit":
 				{
-					this.clientList.remove(clientHandler);
+					int port=clientHandler.getClientSocket().getPort();
+						deleteObserver((Observer) clientHandler);
+
+						clientHandler.getOutToClient().println("exit");;
+						clientHandler.getOutToClient().flush();
+						this.clientList.remove(clientHandler);
+
 					this.connectedClients--;
-					this.noteObservers("RemovedClient","removed client with port: "+clientHandler.getClientSocket().getPort());
+					this.noteObservers("RemovedClient","removed client with port: "+port);
+					
 				}
 					break;
 
@@ -121,7 +130,7 @@ public class MyServerModel extends CommonServerModel {
 							connectedClients++;
 							tempClient.getOutToClient().println("New Connection Established with the server");
 							tempClient.getOutToClient().flush();
-							noteObservers("NewConnection","New client connected with port: "+tempClient.getClientSocket().getPort());
+							//noteObservers("NewConnection","New client connected with port: "+tempClient.getClientSocket().getPort());
 							
 						}
 						else
@@ -194,6 +203,7 @@ public class MyServerModel extends CommonServerModel {
 				{
 					e.printStackTrace();
 				}
+				noteObservers("NewMazeGenerated", "New maze created: "+name);
 
 			}
 			else
@@ -448,13 +458,14 @@ try {
 			if(clientHandler.getClientSocket().getPort()==Integer.valueOf(port))
 			{
 				clientHandler.closeClientHandler();
+				//noteObservers("RemovedClient", "Removed Client With Port: "+port);
 			}
 		}
 		
 	}
 
 	@Override
-	public ArrayList<ClientHandler> handleGetClientList() {
+	public CopyOnWriteArrayList<ClientHandler> handleGetClientList() {
 		return this.clientList;
 	}
 

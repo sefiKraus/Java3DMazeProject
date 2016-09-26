@@ -98,7 +98,7 @@ public class MyClientHandler extends CommonClientHandler{
 
 	@Override
 	public void closeClientHandler() {
-		try {
+		/*try {
 			this.data="exit";
 			this.setChanged();
 			this.notifyObservers(this);
@@ -108,8 +108,10 @@ public class MyClientHandler extends CommonClientHandler{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
+		}*/
+		this.data="exit";
+		this.setChanged();
+		this.notifyObservers(this);
 	}
 
 	public Socket getClientSocket() {

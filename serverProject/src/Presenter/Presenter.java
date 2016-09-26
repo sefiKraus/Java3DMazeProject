@@ -122,7 +122,11 @@ private void fillCommandMap() {
 				ui.showMessage((String)m.getDataFromModel(data));
 			}
 			break;
-
+			case "NewMazeGenerated":
+			{
+				ui.showMessage(((String)m.getDataFromModel(data)));
+			}
+			break;
 			default:
 				break;
 			}

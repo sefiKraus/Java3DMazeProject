@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -236,7 +237,6 @@ public class MyGuiView extends CommonGuiView{
 			
 
 			/*--------------------[Message Box]--------------------*/
-			messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 			
 
 			/*********************Listeners handle*********************/
@@ -418,6 +418,9 @@ public class MyGuiView extends CommonGuiView{
 				
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
+					notifications.put("ClientListRequest", "get client list");
+					setChanged();
+					notifyObservers("ClientListRequest");
 					StackLayout.topControl=clientForm;
 					dataDisplayer.layout();
 				}
@@ -428,7 +431,29 @@ public class MyGuiView extends CommonGuiView{
 					
 				}
 			});
-			
+			kickClientBtn.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+						if(clientPortList.getSelectionCount()>0)
+						{
+							String stringPort=clientPortList.getSelection()[0].toString();
+							notifications.put("RemoveClient", "disconnect "+stringPort);
+							setChanged();
+							notifyObservers("RemoveClient");
+							dataDisplayer.redraw();
+						}
+					
+					
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			displayMazeListBtn.addSelectionListener(new SelectionListener() {
 				
 				@Override
@@ -504,7 +529,9 @@ public class MyGuiView extends CommonGuiView{
 
 		if(message!=null)
 		{
+			MessageBox messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 		this.messageBox.setText("New Message Received");
+		System.out.println(message);
 		messageBox.setMessage(message);
 		messageBox.open();
 		}
@@ -543,13 +570,14 @@ public class MyGuiView extends CommonGuiView{
 
 
 	@Override
-	public void showClientList(ArrayList<ClientHandler>clientList) {
+	public void showClientList(CopyOnWriteArrayList<ClientHandler>clientList) {
 		
 		Iterator<ClientHandler> clientItr=clientList.iterator();
 		StringBuilder builder=new StringBuilder();
 		while(clientItr.hasNext())
 		{
-			builder.append(clientItr.next().getClientSocket().toString()+" ");
+			ClientHandler tempHandler=clientItr.next();
+			builder.append(tempHandler.getClientSocket().getPort()+" ");
 		}
 		String[] splited=builder.toString().split(" ");
 		clientPortList.setItems(splited);

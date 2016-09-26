@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -25,7 +26,7 @@ public interface Model {
 	public void handleSaveProperties(Properties prop,String xmlPath);
 	public void noteObservers(String s,Object data);
 	public void handleDisconnectClient(String port);
-	public ArrayList<ClientHandler> handleGetClientList();
+	public CopyOnWriteArrayList<ClientHandler> handleGetClientList();
 	public Object getDataFromModel(String required);	
 	
 }
