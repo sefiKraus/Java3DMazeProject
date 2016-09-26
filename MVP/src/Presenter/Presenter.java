@@ -54,7 +54,7 @@ public class Presenter implements Observer{
 			}
 		});
 		
-		commandMap.put("generate 3d maze +[^\n\r]+ [0-50]+ [0-50]+ [0-50]+",new Command() {
+		commandMap.put("generate 3d maze +[^\n\r]+ [0-100]+ [0-100]+ [0-100]+",new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
@@ -292,6 +292,12 @@ public class Presenter implements Observer{
 				
 			}
 			break;
+			case ("LoadSolutionList"):
+			{
+				this.activateCommand((String)ui.getDataFromView("LoadSolutionList"));
+
+			}
+			break;
 			case("DisplayMaze"):
 			{
 				this.activateCommand((String)ui.getDataFromView("DisplayMaze"));
@@ -334,7 +340,7 @@ public class Presenter implements Observer{
 			break;
 			case("Exit"):
 			{
-				this.activateCommand("save solution map");
+			//	this.activateCommand("save solution map");
 				m.handleExit();
 			}
 			break;
@@ -348,6 +354,17 @@ public class Presenter implements Observer{
 				
 				//m.handleSaveProperties(prop, xmlPath);
 			}
+			break;
+			case ("SaveSolutionMap"):
+			{
+				this.activateCommand((String)ui.getDataFromView("SaveSolutionMap"));
+			}
+			break;
+			case ("LoadSolutionMap"):
+			{
+				this.activateCommand((String)ui.getDataFromView("LoadSolutionMap"));
+			}
+			break;
 			default:
 				break;
 			}
@@ -394,7 +411,6 @@ public class Presenter implements Observer{
 	public void initViewFromPresenter(String xmlPath)
 	{
 		m.handleLoadProperties(xmlPath);
-		
 
 		
 		if(this.ui!=null)
@@ -430,6 +446,7 @@ public class Presenter implements Observer{
 				{
 					switchToCLI();
 				}
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -444,11 +461,12 @@ public class Presenter implements Observer{
 		((Observable)this.ui).addObserver(this);
 		((MyView)this.ui).getCli().addObserver((Observer)this.ui);
 		this.getUi().start();
+
 	}
 	
 	public void switchToGui()
 	{
-		this.setUi(new MyGuiView("Welcome Player",2500,900));
+		this.setUi(new MyGuiView("Welcome Player",1500,900));
 		((Observable)this.ui).addObserver(this);
 		this.getUi().start();
 

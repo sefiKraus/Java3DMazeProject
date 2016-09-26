@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
@@ -233,7 +234,11 @@ public class MyGuiView extends CommonGuiView{
 			solvedMazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 			solvedMazeList.pack();
 			
+
+			/*--------------------[Message Box]--------------------*/
+			messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 			
+
 			/*********************Listeners handle*********************/
 			
 			openPropertiesItem.addSelectionListener(new SelectionListener() {
@@ -382,7 +387,7 @@ public class MyGuiView extends CommonGuiView{
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
-								showMessage("Please restart game for changes to take place");
+								showMessage("Please restart the server for changes to take place");
 								propShell.dispose();
 							}
 							
@@ -465,6 +470,22 @@ public class MyGuiView extends CommonGuiView{
 					
 				}
 			});
+			saveFileItem.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					notifications.put("SaveSolutionMap", "save solution map");
+					setChanged();
+					notifyObservers("SaveSolutionMap");
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
 	}
 
 
@@ -480,7 +501,13 @@ public class MyGuiView extends CommonGuiView{
 
 	@Override
 	public void showMessage(String message) {
-		// TODO Auto-generated method stub
+
+		if(message!=null)
+		{
+		this.messageBox.setText("New Message Received");
+		messageBox.setMessage(message);
+		messageBox.open();
+		}
 		
 	}
 

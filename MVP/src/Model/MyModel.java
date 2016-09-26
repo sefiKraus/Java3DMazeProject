@@ -308,7 +308,7 @@ public class MyModel extends CommonModel {
 			}
 		}
 		try {
-			FileOutputStream fileOut=new FileOutputStream("solutions.zip");
+			FileOutputStream fileOut=new FileOutputStream("res/solutions.zip");
 			GZIPOutputStream zipOut=new GZIPOutputStream(fileOut);
 			ObjectOutputStream objOut=new ObjectOutputStream(zipOut);
 			objOut.writeObject(cashed);
@@ -332,7 +332,7 @@ public class MyModel extends CommonModel {
 		HashMap<byte[], Solution<Position>> cashed=new HashMap<byte[],Solution<Position>>();
 		try
 		{
-		FileInputStream fileIn=new FileInputStream("solutions.zip");
+		FileInputStream fileIn=new FileInputStream("res/solutions.zip");
 		GZIPInputStream zipIn=new GZIPInputStream(fileIn);
 		ObjectInputStream objIn=new ObjectInputStream(zipIn);
 		cashed=(HashMap)objIn.readObject();

@@ -86,7 +86,7 @@ public class MyGuiView extends CommonGuiView{
 	
 	Menu menuBar,fileMenu,aboutMenu,propertiesMenu;
 	MenuItem fileMenuHeader,aboutMenuHeader,propertiesMenuHeader;
-	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem;
+	MenuItem saveFileItem,loadFileItem,exitFromGame,openPropertiesItem,saveSolutionMap,loadSolutionMap;
 	
 	/**
 	 * 
@@ -136,6 +136,12 @@ public class MyGuiView extends CommonGuiView{
 		
 		loadFileItem=new MenuItem(fileMenu, SWT.PUSH);
 		loadFileItem.setText("&Load Maze");
+		
+		saveSolutionMap=new MenuItem(fileMenu, SWT.PUSH);
+		saveSolutionMap.setText("&Save Solution Map");
+		
+		loadSolutionMap=new MenuItem(fileMenu, SWT.PUSH);
+		loadSolutionMap.setText("&Load Solution Map");
 		
 		exitFromGame=new MenuItem(fileMenu, SWT.PUSH);
 		exitFromGame.setText("&Exit");
@@ -300,7 +306,7 @@ public class MyGuiView extends CommonGuiView{
 			solveMazeLabel.setText("Choose Maze To Solve: ");
 			solveMazeLabel.pack();
 			
-			solveMazeList=new List(solveForm, SWT.DROP_DOWN|SWT.READ_ONLY);
+			solveMazeList=new List(solveForm, SWT.V_SCROLL|SWT.READ_ONLY);
 			solveMazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 			solveMazeList.pack();
 			
@@ -334,7 +340,7 @@ public class MyGuiView extends CommonGuiView{
 				displaySolutionFor.setText("Choose a maze to solve: ");
 				displaySolutionFor.pack();
 				
-				solutionList=new List(displaySolutionForm, SWT.READ_ONLY|SWT.DROP_DOWN);
+				solutionList=new List(displaySolutionForm, SWT.READ_ONLY|SWT.V_SCROLL);
 				solutionList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 				solutionList.pack();
 				
@@ -352,7 +358,7 @@ public class MyGuiView extends CommonGuiView{
 		saveForm=new Composite(dataDisplayer, SWT.BORDER);
 		saveForm.setLayout(new GridLayout(1,false));
 		saveForm.setBackgroundImage(backImage);
-		mazeList=new List(saveForm, SWT.SINGLE|SWT.BORDER);
+		mazeList=new List(saveForm, SWT.SINGLE|SWT.BORDER|SWT.V_SCROLL);
 		mazeList.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		mazeList.pack();
 		
@@ -365,7 +371,12 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[Message Box]--------------------*/
 		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 		
-
+		/*notifications.put("LoadSolutionList","load solution map");
+		setChanged();
+		notifyObservers("LoadSolutionList");
+		notifications.put("SolutionListRequest","display solution list");
+		setChanged();
+		notifyObservers("SolutionListRequest");*/
 		/*********************Listeners handle*********************/
 
 		
@@ -667,6 +678,7 @@ public class MyGuiView extends CommonGuiView{
 					solveMazeList.remove(mazeName);
 					dataDisplayer.redraw();
 					
+					
 				}
 
 			}
@@ -687,12 +699,12 @@ public class MyGuiView extends CommonGuiView{
 				notifyObservers("SolutionListRequest");
 				StackLayout.topControl=displaySolutionForm;
 				dataDisplayer.layout();
-				StringBuilder builder=new StringBuilder();
+/*				StringBuilder builder=new StringBuilder();
 				for (String name : mazeSolMap.keySet()) {
 					builder.append(name+" ");
 				}
 				String[] items=builder.toString().split(" ");
-				solutionList.setItems(items);
+				solutionList.setItems(items);*/
 				
 			}
 			
@@ -819,6 +831,39 @@ public class MyGuiView extends CommonGuiView{
 			}
 		});
 		
+		saveSolutionMap.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				notifications.put("SaveSolutionMap", "save solution map");
+				setChanged();
+				notifyObservers("SaveSolutionMap");
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		loadSolutionMap.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				notifications.put("LoadSolutionMap","load solution map");
+				setChanged();
+				notifyObservers("LoadSolutionMap");
+
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 
 		
 	}
@@ -858,18 +903,18 @@ public class MyGuiView extends CommonGuiView{
 		
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
-			mazeShell.setLayout(new GridLayout(2,false));
-			mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
-			mazeShell.setBackgroundImage(new Image(null,"res/images/ezWall.png"));
+			mazeShell.setLayout(new GridLayout(1,false));
+			 mazeShell.setBackgroundImage(new Image(null,"res/images/ezWall.png"));
 			 maze=new Maze3d(byteMaze);
 			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
 			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 			 helpSolveBtn.setText("Press here to solve the maze");
 			 
 			 
-			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell, SWT.SHELL_TRIM|SWT.DOUBLE_BUFFERED,maze);
-			this.mazeDisplayer.setSize(shell.getBounds().width, shell.getBounds().height);
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,2));
+			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.DOUBLE_BUFFERED,maze);
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			
+			
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeDisplayer.addMouseWheelListener(mouseWheelListener);
 			String name=mazeName.getText();
@@ -920,12 +965,12 @@ public class MyGuiView extends CommonGuiView{
 				switch (e.keyCode) {
 				case SWT.ARROW_UP:
 				{
-					mazeDisplayer.moveOut();
+					mazeDisplayer.moveIn();
 				}
 					break;
 				case SWT.ARROW_DOWN:
 				{
-					mazeDisplayer.moveIn();
+					mazeDisplayer.moveOut();
 
 				}
 				break;
@@ -1085,7 +1130,7 @@ public class MyGuiView extends CommonGuiView{
 							}
 						}
 					}
-				}, 0, 150);
+				}, 0, 200);
 			}
 		});
 	}
@@ -1117,12 +1162,12 @@ public class MyGuiView extends CommonGuiView{
 	 */
 	@Override
 	public void showAutoSolution(String mazeName, Maze3d maze) {
-		mazeShell=new Shell(shell, SWT.SHELL_TRIM|SWT.DOUBLE_BUFFERED);
+		mazeShell=new Shell(shell, SWT.SHELL_TRIM);
 		mazeShell.setLayout(new GridLayout(1,false));
 		mazeShell.setBackgroundImage(new Image(null, "res/images/ezWall.png"));
-		mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
+		//mazeShell.setSize(shell.getBounds().width,shell.getBounds().height);
 		mazeShell.setText(mazeName);
-		mazeDisplayer=new MyMazeDisplayWidgets(mazeShell, SWT.NONE, maze);
+		mazeDisplayer=new MyMazeDisplayWidgets(mazeShell, SWT.DOUBLE_BUFFERED, maze);
 		mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		mazeShell.open();
 		this.showSolution(mazeName, mazeSolMap.get(mazeName));

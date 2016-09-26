@@ -40,7 +40,7 @@ public class GameCharacter extends Canvas{
 	 */
 	public void draw(int cellWidth,int cellHeight,GC gc)
 	{
-		gc.drawImage(this.playerImage, 0, 0	, this.playerImage.getBounds().width, (this.playerImage.getBounds().height), this.playerPosition.getX()*cellWidth, this.playerPosition.getZ()*cellHeight, cellWidth,cellHeight);
+		gc.drawImage(this.playerImage, 0, 0	, this.playerImage.getBounds().width, (this.playerImage.getBounds().height), this.playerPosition.getZ()*cellWidth, this.playerPosition.getX()*cellHeight, cellWidth,cellHeight);
 	}
 	public void moveUp()
 	{

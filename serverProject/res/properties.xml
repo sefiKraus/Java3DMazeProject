@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="1.8.0_101" class="java.beans.XMLDecoder">
- <object class="serverProject.Properties"/>
+ <object class="serverProject.Properties">
+  <void property="amountOfClients">
+   <int>3</int>
+  </void>
+ </object>
 </java>

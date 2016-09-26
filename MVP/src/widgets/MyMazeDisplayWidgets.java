@@ -6,7 +6,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 
@@ -68,14 +68,14 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 			
 			@Override
 			public void paintControl(PaintEvent e) {
-			/*	e.gc.setBackground(new Color(null, 0,0,0));
-				e.gc.setForeground(new Color(null, 0,0,0));*/
+				e.gc.setBackground(new Color(null, 0,0,0));
+				e.gc.setForeground(new Color(null, 0,0,0));
 				int width=getSize().x;
 				int height=getSize().y;
-				int r=Math.min(width, height);
+			//	int r=Math.min(width, height);
 
-				int w=r/mazeData[0].length;
-				int h=r/mazeData.length;
+				int w=width/mazeData.length;
+				int h=height/mazeData[0].length;
 
 				for(int i=0;i<mazeData.length;i++)
 				{
@@ -88,13 +88,13 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 						{
 							
 							e.gc.drawImage(cellImage, 0, 0,cellImage.getBounds().width,cellImage.getBounds().height,
-									y,x,w,h);
+									x,y,w,h);
 							
 						}
 						else
 						{
 							e.gc.drawImage(floorImage,0,0,floorImage.getBounds().width,floorImage.getBounds().height
-									,y,x,w,h);
+									,x,y,w,h);
 						}
 					}
 				}
@@ -147,27 +147,28 @@ public  class MyMazeDisplayWidgets extends MazeDisplay{
 
 	@Override
 	public void moveRight() {
-		this.movePlayerTo(player.getY(),player.getX()+1,player.getZ());
-
+		//this.movePlayerTo(player.getY(),player.getX()+1,player.getZ());
+		this.movePlayerTo(player.getY(),player.getX(),player.getZ()+1);
 	}
 
 	@Override
 	public void moveLeft() {
 		
-		this.movePlayerTo(player.getY(),player.getX()-1,player.getZ());
+	//	this.movePlayerTo(player.getY(),player.getX()-1,player.getZ());
+		this.movePlayerTo(player.getY(),player.getX(),player.getZ()-1);
 
 	}
 
 	@Override
 	public void moveIn() {
-		this.movePlayerTo(player.getY(),player.getX(),player.getZ()+1);
-
+		//this.movePlayerTo(player.getY(),player.getX(),player.getZ()+1);
+		this.movePlayerTo(player.getY(),player.getX()-1,player.getZ());
 	}
 
 	@Override
 	public void moveOut() {
-		this.movePlayerTo(player.getY(),player.getX(),player.getZ()-1);
-
+	//	this.movePlayerTo(player.getY(),player.getX(),player.getZ()-1);
+		this.movePlayerTo(player.getY(),player.getX()+1,player.getZ());
 	}
 
 	/**
