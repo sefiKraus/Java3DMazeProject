@@ -577,7 +577,7 @@ public class MyGuiView extends CommonGuiView{
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				if(Integer.valueOf(yAxisText.getText())>9 &&Integer.valueOf(xAxisText.getText())>9 &&Integer.valueOf(zAxisText.getText())>9)
+				if(Integer.valueOf(yAxisText.getText())>3 &&Integer.valueOf(xAxisText.getText())>3 &&Integer.valueOf(zAxisText.getText())>3)
 				{
 					String mazeData="generate 3d maze "+mazeNameText.getText()+" "+yAxisText.getText()+" "+xAxisText.getText()+" "+zAxisText.getText();
 					notifications.put("GenerateMaze", mazeData);

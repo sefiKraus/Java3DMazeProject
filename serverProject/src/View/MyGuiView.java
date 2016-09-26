@@ -529,11 +529,11 @@ public class MyGuiView extends CommonGuiView{
 
 		if(message!=null)
 		{
-			MessageBox messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
-		this.messageBox.setText("New Message Received");
+		//	MessageBox messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
+		//this.messageBox.setText("New Message Received");
 		System.out.println(message);
-		messageBox.setMessage(message);
-		messageBox.open();
+		//messageBox.setMessage(message);
+		//messageBox.open();
 		}
 		
 	}

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.swt.widgets.Display;
 
 import Model.Model;
 import Model.PropertiesXmlHandler;
@@ -54,7 +53,7 @@ public class Presenter implements Observer{
 			}
 		});
 		
-		commandMap.put("generate 3d maze +[^\n\r]+ [0-100]+ [0-100]+ [0-100]+",new Command() {
+		commandMap.put("generate 3d maze +[^\n\r]+ [0-50]+ [0-50]+ [0-50]+",new Command() {
 
 			@Override
 			public void doCommand(String[] args) {
