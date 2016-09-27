@@ -412,6 +412,28 @@ public class MyModel extends CommonModel {
 		
 	}
 
+	@Override
+	public void handleHint(String name) {
+		
+		if(!this.solutionMap.containsKey(this.mazeMap.get(name)))
+		{
+			this.handleSolveMaze(name, "bfs");
+			ArrayList<Position>tempSol=this.solutionMap.get(this.mazeMap.get(name)).getSolution();
+			Iterator<Position>itr=tempSol.iterator();
+			itr.next();
+			Position dest=itr.next();
+			
+			this.noteObservers("NextStep", dest);
+		}
+		else
+		{
+			this.noteObservers("Message", "Please move your character to get more hints");
+		}
+		
+		
+		
+	}
+
 
 	
 }

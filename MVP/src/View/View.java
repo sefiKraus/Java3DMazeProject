@@ -16,7 +16,7 @@ public interface View {
 	public void start();
 	
 	public void showDirContent(String path);
-	public void showMessage(String message);
+	public void showMessage(String message)	;
 	public void showGeneratedMaze(byte[] byteMaze);
 	public Object getDataFromView(String s);
 	public void showGeneratedMazeName(String name);
@@ -26,5 +26,5 @@ public interface View {
 	public void showSolution(String mazeName,Solution<Position>solution);
 	public void showMazeList(Set<String> set);
 	public void showAutoSolution(String mazeName,Maze3d maze);
-	
+	public void showHint(Position destPos);
 }

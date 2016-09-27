@@ -28,6 +28,6 @@ public interface Model {
 	public void handleChangeMazeStartPosition(String mazeName,Position position);
 	public void handleLoadProperties(String xmlPath);
 	public void handleSaveProperties(Properties prop,String xmlPath);
-	
+	public void handleHint(String name);
 	
 }

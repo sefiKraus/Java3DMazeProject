@@ -371,12 +371,7 @@ public class MyGuiView extends CommonGuiView{
 		/*--------------------[Message Box]--------------------*/
 		messageBox=new MessageBox(shell, SWT.ICON_INFORMATION|SWT.YES);
 		
-		/*notifications.put("LoadSolutionList","load solution map");
-		setChanged();
-		notifyObservers("LoadSolutionList");
-		notifications.put("SolutionListRequest","display solution list");
-		setChanged();
-		notifyObservers("SolutionListRequest");*/
+
 		/*********************Listeners handle*********************/
 
 		
@@ -586,7 +581,7 @@ public class MyGuiView extends CommonGuiView{
 				}
 				else
 				{
-					showMessage("Please enter correct sizes each size should be at least 10");
+					showMessage("Please enter correct sizes each size should be at least 3");
 				}
 				
 				
@@ -903,22 +898,37 @@ public class MyGuiView extends CommonGuiView{
 		
 		try {
 			mazeShell=new Shell(shell,SWT.SHELL_TRIM);
-			mazeShell.setLayout(new GridLayout(1,false));
+			mazeShell.setLayout(new GridLayout(2,false));
 			 mazeShell.setBackgroundImage(new Image(null,"res/images/ezWall.png"));
+			 mazeShell.addDisposeListener(new DisposeListener() {
+				
+				@Override
+				public void widgetDisposed(DisposeEvent arg0) {
+					Position startPos=mazeDisplayer.getMaze().getStartPosition();
+					mazeDisplayer.getMaze().setPlayerPosition(new Position(startPos.getY(), startPos.getX(), startPos.getZ()));
+				}
+			});
 			 maze=new Maze3d(byteMaze);
+			 
 			 Button helpSolveBtn=new Button(mazeShell, SWT.PUSH);
 			 helpSolveBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
 			 helpSolveBtn.setText("Press here to solve the maze");
-			 
-			 
+
+				Button hintBtn=new Button(mazeShell, SWT.PUSH);
+				hintBtn.setLayoutData(new GridData(SWT.NONE,SWT.NONE,false,false,1,1));
+				hintBtn.setText("Press here to get a hint");
+				
 			this.mazeDisplayer= new MyMazeDisplayWidgets(mazeShell,SWT.DOUBLE_BUFFERED,maze);
-			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
+			this.mazeDisplayer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,2));
 			
+	
 			
 			this.mazeDisplayer.addKeyListener(keyListener);
 			this.mazeDisplayer.addMouseWheelListener(mouseWheelListener);
 			String name=mazeName.getText();
 			this.mazeShell.setText(name);
+			
+
 			
 			
 			this.mazeShell.open();
@@ -937,7 +947,26 @@ public class MyGuiView extends CommonGuiView{
 					notifyObservers("SolutionListRequest");
 					showSolution(name, mazeSolMap.get(name));
 					helpSolveBtn.setVisible(false);
+					hintBtn.setVisible(false);
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
 					
+				}
+			});
+			
+			hintBtn.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					String name=mazeShell.getText();
+					Position tempPosition=mazeDisplayer.getPlayer().getPlayerPosition();
+					notifications.put("Hint", name+" "+tempPosition.toString());
+					setChanged();
+					notifyObservers("Hint");
+					mazeDisplayer.setFocus();
 				}
 				
 				@Override
@@ -1172,6 +1201,12 @@ public class MyGuiView extends CommonGuiView{
 		mazeShell.open();
 		this.showSolution(mazeName, mazeSolMap.get(mazeName));
 
+		
+	}
+	@Override
+	public void showHint(Position destPos) {
+		
+		mazeDisplayer.movePlayerTo(destPos.getY(), destPos.getX(), destPos.getZ());
 		
 	}
 

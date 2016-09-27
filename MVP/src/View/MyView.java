@@ -295,6 +295,12 @@ public class MyView extends CommonView implements Observer,View {
 		
 	}
 
+	@Override
+	public void showHint(Position destPos) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 

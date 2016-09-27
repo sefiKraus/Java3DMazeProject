@@ -129,6 +129,14 @@ public class Presenter implements Observer{
 			ui.showSolution(args[2],m.getSolutionMap().get(m.getMazeMap().get(args[2])));
 			}
 		});
+		commandMap.put("get solution for [^\n\r]+", new Command() {
+
+			@Override
+			public void doCommand(String[] args) {
+				
+				m.handleHint(args[3]);
+			}
+		});
 		commandMap.put("display solution list", new Command() {
 
 			@Override
@@ -172,6 +180,7 @@ public class Presenter implements Observer{
 				ui.showMazeList(m.getMazeMap().keySet());
 			}
 		});
+
 		commandMap.put("help",new Command() {
 
 			@Override
@@ -245,6 +254,11 @@ public class Presenter implements Observer{
 			case ("SaveSolutionList"):
 			{
 				ui.showMessage((String)m.getDataFromModel(data));
+			}
+			break;
+			case ("NextStep"):
+			{
+				ui.showHint((Position)m.getDataFromModel(data));
 			}
 			break;
 			default:
@@ -362,6 +376,15 @@ public class Presenter implements Observer{
 			case ("LoadSolutionMap"):
 			{
 				this.activateCommand((String)ui.getDataFromView("LoadSolutionMap"));
+			}
+			break;
+			case ("Hint"):
+			{
+				String string=(String)ui.getDataFromView("Hint");
+				String[] args=string.split(" ");
+
+				m.handleChangeMazeStartPosition(args[0],new Position(args[1]));
+				this.activateCommand("get solution for "+args[0]);
 			}
 			break;
 			default:
